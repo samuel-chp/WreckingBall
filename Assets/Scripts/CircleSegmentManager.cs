@@ -431,7 +431,7 @@ public class CircleSegmentManager : MonoBehaviour
     {
         int j = slice + 1;
         j = j % nSlice;
-        Debug.Log("Slice visited Right: " + j);
+        //Debug.Log("Slice visited Right: " + j);
 
         // -------------------- Search to the right -------------------- //
         // Search to the right as long as the color match
@@ -489,7 +489,7 @@ public class CircleSegmentManager : MonoBehaviour
             // -------------------- Update slice -------------------- //
             j += 1;
             j = j % nSlice;
-            Debug.Log("Slice visited Right: " + j);
+            //Debug.Log("Slice visited Right: " + j);
 
         }
 
@@ -504,7 +504,7 @@ public class CircleSegmentManager : MonoBehaviour
         if (j == -1) {
             j = nSlice - 1;
         }
-        Debug.Log("Slice visited Left: " + j);
+        //Debug.Log("Slice visited Left: " + j);
 
         // -------------------- Search to the left -------------------- //
         // Search to the left as long as the color match
@@ -561,7 +561,7 @@ public class CircleSegmentManager : MonoBehaviour
             if (j == -1) {
                 j = nSlice - 1;
             }
-            Debug.Log("Slice visited Left: " + j);
+            //Debug.Log("Slice visited Left: " + j);
 
         }
 
@@ -576,7 +576,7 @@ public class CircleSegmentManager : MonoBehaviour
         if (i == -1) {
             return (counter, positionsMatching);
         }
-        Debug.Log("Layer visited Bottom: " + i);
+        //Debug.Log("Layer visited Bottom: " + i);
 
         // Search to the bottom as long as the color match and we stay in the grid
         while(colorBlocks[slice, i] == colorOfBlock) {
@@ -636,7 +636,7 @@ public class CircleSegmentManager : MonoBehaviour
             if (i == -1) {
                 break;
             }
-            Debug.Log("Layer visited Bottom: " + i);
+            //Debug.Log("Layer visited Bottom: " + i);
         }
 
         return (counter, positionsMatching);
