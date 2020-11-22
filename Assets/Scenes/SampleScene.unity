@@ -1588,7 +1588,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1425544883
 PrefabInstance:
@@ -2094,8 +2094,8 @@ MonoBehaviour:
   circleSegmentPrefab: {fileID: 2038912917578110074, guid: 88c976886fcc8aa4e9b5c2f4318e96bb,
     type: 3}
   planetCore: {fileID: 718129862}
-  nLayer: 7
-  nSlice: 8
+  nLayer: 6
+  nSlice: 4
   segmentColors:
   - {r: 0, g: 0, b: 0, a: 1}
   - {r: 0, g: 0, b: 1, a: 1}
@@ -2518,7 +2518,7 @@ PrefabInstance:
     - target: {fileID: 2525345166828870184, guid: 78e5bc54c97102b498fc09afb1c6891c,
         type: 3}
       propertyPath: m_RootOrder
-      value: 6
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 2525345166828870184, guid: 78e5bc54c97102b498fc09afb1c6891c,
         type: 3}

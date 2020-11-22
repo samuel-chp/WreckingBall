@@ -71,6 +71,9 @@ public class CircleSegmentManager : MonoBehaviour
     {
         float unitAngle = (float) (Math.PI / nSlice);
         float unitScale = (1 - planetCore.transform.localScale.x) / nLayer;
+        Vector2 unitSize = 
+            (GetComponent<SpriteRenderer>().bounds.size - planetCore.GetComponent<SpriteRenderer>().bounds.size) / nLayer;
+
         int order = nLayer*nSlice + 1;  // Careful : planetCore orderInLayer must be greater than this one
 
         colorBlocks = new Color[nSlice, nLayer]; // Generate 2D array of colors
@@ -87,8 +90,12 @@ public class CircleSegmentManager : MonoBehaviour
                 Material segmentMaterial = renderer.material;
                 
                 // Size
-                segment.transform.localScale =
-                    planetCore.transform.localScale + (i + 1) * new Vector3(unitScale, unitScale, unitScale);
+                var scale = segment.transform.localScale.x * 
+                            (planetCore.GetComponent<SpriteRenderer>().bounds.size.x + unitSize.x * (i + 1)) / 
+                            renderer.bounds.size.x; // Find which scale to use to get the correct size
+                segment.transform.localScale = new Vector3(scale, scale, scale);
+                // segment.transform.localScale =
+                //     planetCore.transform.localScale + (i + 1) * new Vector3(unitScale, unitScale, unitScale);
 
                 // Layer
                 renderer.sortingOrder = order;
@@ -108,6 +115,7 @@ public class CircleSegmentManager : MonoBehaviour
                 // Setting the collider
                 CircleSegment circleSegment = segment.GetComponent<CircleSegment>();
                 float angle = j*2*unitAngle;
+                float size = planetCore.GetComponent<SpriteRenderer>().bounds.size.x + unitSize.x * (i + 1);
                 circleSegment.Initialize(
                     0.5f*(planetCore.transform.localScale.x + i * unitScale)/(segment.transform.localScale.x), // innerRadius
                     0.5f*(planetCore.transform.localScale.x + (i+1) * unitScale)/(segment.transform.localScale.x), // outerRadius
