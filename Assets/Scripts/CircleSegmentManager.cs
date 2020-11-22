@@ -99,8 +99,7 @@ public class CircleSegmentManager : MonoBehaviour
                 colorBlocks[j,i] = renderer.color; // Update color 
 
                 // Shader for creating an arc
-                segmentMaterial.SetFloat("_startAngle", 0f);
-                segmentMaterial.SetFloat("_endAngle", unitAngle);
+                segmentMaterial.SetFloat("_Angle", unitAngle);
 
                 // Setting the arc at the right position
                 float rotate = -2 * j * unitAngle - (float) unitAngle;

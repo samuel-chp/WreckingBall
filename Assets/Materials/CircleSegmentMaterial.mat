@@ -8,8 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: CircleSegmentMaterial
-  m_Shader: {fileID: -6465566751694194690, guid: 25ce20afa386e44429f7980e2e46d17e,
-    type: 3}
+  m_Shader: {fileID: 4800000, guid: d951bbed29b08df42894974fd773918f, type: 3}
   m_ShaderKeywords: ETC1_EXTERNAL_ALPHA
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -41,6 +40,8 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
+    - PixelSnap: 0
+    - _Angle: 1
     - _Arcrange: 360
     - _Backgroundborderopacity: 1
     - _Backgroundborderradialwidth: 0
@@ -48,6 +49,7 @@ Material:
     - _Backgroundopacity: 1
     - _Fillpercentage: 0.25
     - _Globalopacity: 1
+    - _Glossiness: 0.5
     - _Invertmaintex: 0
     - _Invertnoisetex: 0
     - _Invertsecondarytex: 0
@@ -58,6 +60,7 @@ Material:
     - _Maintexcontrast: 1
     - _Maintexopacity: 1
     - _Maintexrotationspeed: 1
+    - _Metallic: 0
     - _Noiseintensity: 5
     - _Noisetexcontrast: 1
     - _Radius: 0.3
@@ -79,7 +82,7 @@ Material:
     - _Bordermaxcolor: {r: 0, g: 1, b: 0.08965516, a: 1}
     - _Bordermincolor: {r: 1, g: 0, b: 0, a: 1}
     - _Center: {r: 0, g: 0, b: 0, a: 0}
-    - _Color: {r: 0.13943633, g: 0.10898005, b: 0.745283, a: 1}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _Maintexoffset: {r: 0, g: 0, b: 0, a: 0}
     - _Maintexscrollspeed: {r: 0, g: 0, b: 0, a: 0}
     - _Maintextiling: {r: 0, g: 0, b: 0, a: 0}
@@ -89,3 +92,4 @@ Material:
     - _Secondarytexoffset: {r: 0, g: 0, b: 0, a: 0}
     - _Secondarytexscrollspeed: {r: 0, g: 0, b: 0, a: 0}
     - _Secondarytextiling: {r: 0, g: 0, b: 0, a: 0}
+  m_BuildTextureStacks: []
