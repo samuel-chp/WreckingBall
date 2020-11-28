@@ -8,7 +8,7 @@ public class InnerCircleCollider : MonoBehaviour
     public int NumPoints = 32;
  
     EdgeCollider2D EdgeCollider;
-    float CurrentRadius = 0.0f;
+    public float CurrentRadius = 0.0f;
  
     /// <summary>
     /// Start this instance.

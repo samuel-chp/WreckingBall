@@ -18,11 +18,16 @@ public class CircleSegmentManager : MonoBehaviour
     public int nSlice;
 
     [SerializeField] public Color[] segmentColors; //Convention: first color = "empty" color (Black by default)
-    public Sprite[] segmentSprites;
-    
+
     public Color[,] colorBlocks; // Array to keep track of the color by slice and layer
     public GameObject[,] segmentsOrdered; // Array to acces segments by slice and layer
 
+    // Variables for filling mode
+    public int heightFilling; 
+    public int probabilityBlackLastLayer; 
+    public string fillingMode = "normal"; //easy": maximize the chance to have two blocks next to each other
+                                           //"normal": 2 blocks of the same color can be next to each other
+                                           //"hard": 2 blocks of the same color can't be next to each other
 
     /* -------------------------------------------------------------------------------------------------------------------------------------------- 
     -------------------------------------------------- Creating the puzzle game -------------------------------------------------------------------
@@ -72,14 +77,12 @@ public class CircleSegmentManager : MonoBehaviour
     {
         float unitAngle = (float) (Math.PI / nSlice);
         float unitScale = (1 - planetCore.transform.localScale.x) / nLayer;
-        Vector2 unitSize = 
-            (GetComponent<SpriteRenderer>().bounds.size - planetCore.GetComponent<SpriteRenderer>().bounds.size) / nLayer;
         int order = nLayer*nSlice + 1;  // Careful : planetCore orderInLayer must be greater than this one
 
         colorBlocks = new Color[nSlice, nLayer]; // Generate 2D array of colors
         segmentsOrdered = new GameObject[nSlice, nLayer]; // Generate 2D array of segments
 
-        Color[,] colorMapping = CreateInitialMapping(5, 3, "normal"); // Generate initial mapping
+        Color[,] colorMapping = CreateInitialMapping(heightFilling, probabilityBlackLastLayer, fillingMode); // Generate initial mapping
 
         for (int i = 0; i < nLayer; i++)
         {
@@ -90,10 +93,6 @@ public class CircleSegmentManager : MonoBehaviour
                 Material segmentMaterial = renderer.material;
                 
                 // Size
-                // IMPORTANT : one circle = one unit (think to set the ppu accordingly)
-                // var scale = (segment.transform.localScale.x / renderer.bounds.size.x) *
-                //             (planetCore.GetComponent<SpriteRenderer>().bounds.size.x + unitSize.x * (i + 1)) ; // Find which scale to use to get the correct size
-                // segment.transform.localScale = new Vector3(scale, scale, scale);
                 segment.transform.localScale =
                     planetCore.transform.localScale + (i + 1) * new Vector3(unitScale, unitScale, unitScale);
 
@@ -101,10 +100,9 @@ public class CircleSegmentManager : MonoBehaviour
                 renderer.sortingOrder = order;
 
                 // Color
-                renderer.color = segmentColors[order % segmentColors.Length]; // Replace by a better chosen color
+                // renderer.color = segmentColors[order % segmentColors.Length]; // Replace by a better chosen color
                 renderer.color = colorMapping[j,i];
-                // renderer.sprite = color2Sprite(colorMapping[j, i]);
-                // colorBlocks[j,i] = renderer.color; // Update color 
+                colorBlocks[j,i] = renderer.color; // Update color 
 
                 // Shader for creating an arc
                 segmentMaterial.SetFloat("_Angle", unitAngle);
@@ -129,6 +127,7 @@ public class CircleSegmentManager : MonoBehaviour
 
                 // Save segment in array
                 segmentsOrdered[j,i] = segment;
+
             }
         }
     }
@@ -703,22 +702,6 @@ public class CircleSegmentManager : MonoBehaviour
         return movedBlocks;
         
     }
-    
-    /* -------------------------------------------------------------------------------------------------------------------------------------------- 
-    --------------------------------------------------------Custom---------------------------------------------------------------------------------
-    -------------------------------------------------------------------------------------------------------------------------------------------- */
+ 
 
-    private Sprite color2Sprite(Color color)
-    {
-        for (int i = 0; i < segmentColors.Length; i++)
-        {
-            if (color == segmentColors[i])
-            {
-                return segmentSprites[i];
-            }
-        }
-
-        return segmentSprites[0];
-    }
-    
 }
