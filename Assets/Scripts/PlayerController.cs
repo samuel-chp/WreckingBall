@@ -7,24 +7,30 @@ public class PlayerController : MonoBehaviour
 {
 
     private Rigidbody2D _rb;
+    
+    [Header("Renderer")]
+    public ParticleSystem featherBurst;
     private SpriteRenderer _spriteRenderer;
     private Animator _animator;
-    
-    private bool _isGrounded;
-    private Vector3 _gravityDirection;
-    private float _lastHorizontalInput = 0f;
 
+    [Header("Collisions")]
     [SerializeField] private LayerMask groundLayer;
 
     public GameObject planet;
+    public GameObject projectile;
 
+    [Header("Gravity")]
+    public float maxGravity;
     public enum GravityOrientation {Inner = 1, Outer = -1};
     public GravityOrientation gravityOrientation;
-    public float maxGravity;
+    private Vector3 _gravityDirection;
 
+    [Header("Jump")]
     public float jumpForce;
     public float throwForce;
+    private bool _isGrounded;
 
+    [Header("Speed")]
     public float speed;
     public float maxSpeed;
 
@@ -109,9 +115,16 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void ThrowProjectile(Transform projectile)
+    public void ThrowProjectile(ProjectileController source)
     {
-        Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
+        Transform egg = Instantiate(projectile.transform, transform.position, transform.rotation);
+        egg.GetComponent<SpriteRenderer>().color = source.color;
+        Rigidbody2D rb = egg.GetComponent<Rigidbody2D>();
         rb.velocity = GetGravitySign() * _gravityDirection * throwForce;
+        
+        // Feather burst
+        ParticleSystem.MainModule main = featherBurst.main;
+        main.startColor = source.color;
+        featherBurst.Play();
     }
 }

@@ -18,7 +18,8 @@ public class CircleSegmentManager : MonoBehaviour
     public int nSlice;
 
     [SerializeField] public Color[] segmentColors; //Convention: first color = "empty" color (Black by default)
-
+    public Sprite[] segmentSprites;
+    
     public Color[,] colorBlocks; // Array to keep track of the color by slice and layer
     public GameObject[,] segmentsOrdered; // Array to acces segments by slice and layer
 
@@ -73,7 +74,6 @@ public class CircleSegmentManager : MonoBehaviour
         float unitScale = (1 - planetCore.transform.localScale.x) / nLayer;
         Vector2 unitSize = 
             (GetComponent<SpriteRenderer>().bounds.size - planetCore.GetComponent<SpriteRenderer>().bounds.size) / nLayer;
-
         int order = nLayer*nSlice + 1;  // Careful : planetCore orderInLayer must be greater than this one
 
         colorBlocks = new Color[nSlice, nLayer]; // Generate 2D array of colors
@@ -90,20 +90,21 @@ public class CircleSegmentManager : MonoBehaviour
                 Material segmentMaterial = renderer.material;
                 
                 // Size
-                var scale = segment.transform.localScale.x * 
-                            (planetCore.GetComponent<SpriteRenderer>().bounds.size.x + unitSize.x * (i + 1)) / 
-                            renderer.bounds.size.x; // Find which scale to use to get the correct size
-                segment.transform.localScale = new Vector3(scale, scale, scale);
-                // segment.transform.localScale =
-                //     planetCore.transform.localScale + (i + 1) * new Vector3(unitScale, unitScale, unitScale);
+                // IMPORTANT : one circle = one unit (think to set the ppu accordingly)
+                // var scale = (segment.transform.localScale.x / renderer.bounds.size.x) *
+                //             (planetCore.GetComponent<SpriteRenderer>().bounds.size.x + unitSize.x * (i + 1)) ; // Find which scale to use to get the correct size
+                // segment.transform.localScale = new Vector3(scale, scale, scale);
+                segment.transform.localScale =
+                    planetCore.transform.localScale + (i + 1) * new Vector3(unitScale, unitScale, unitScale);
 
                 // Layer
                 renderer.sortingOrder = order;
 
                 // Color
-                // renderer.color = segmentColors[order % segmentColors.Length]; // Replace by a better chosen color
+                renderer.color = segmentColors[order % segmentColors.Length]; // Replace by a better chosen color
                 renderer.color = colorMapping[j,i];
-                colorBlocks[j,i] = renderer.color; // Update color 
+                // renderer.sprite = color2Sprite(colorMapping[j, i]);
+                // colorBlocks[j,i] = renderer.color; // Update color 
 
                 // Shader for creating an arc
                 segmentMaterial.SetFloat("_Angle", unitAngle);
@@ -115,7 +116,6 @@ public class CircleSegmentManager : MonoBehaviour
                 // Setting the collider
                 CircleSegment circleSegment = segment.GetComponent<CircleSegment>();
                 float angle = j*2*unitAngle;
-                float size = planetCore.GetComponent<SpriteRenderer>().bounds.size.x + unitSize.x * (i + 1);
                 circleSegment.Initialize(
                     0.5f*(planetCore.transform.localScale.x + i * unitScale)/(segment.transform.localScale.x), // innerRadius
                     0.5f*(planetCore.transform.localScale.x + (i+1) * unitScale)/(segment.transform.localScale.x), // outerRadius
@@ -703,6 +703,22 @@ public class CircleSegmentManager : MonoBehaviour
         return movedBlocks;
         
     }
- 
+    
+    /* -------------------------------------------------------------------------------------------------------------------------------------------- 
+    --------------------------------------------------------Custom---------------------------------------------------------------------------------
+    -------------------------------------------------------------------------------------------------------------------------------------------- */
 
+    private Sprite color2Sprite(Color color)
+    {
+        for (int i = 0; i < segmentColors.Length; i++)
+        {
+            if (color == segmentColors[i])
+            {
+                return segmentSprites[i];
+            }
+        }
+
+        return segmentSprites[0];
+    }
+    
 }

@@ -80,9 +80,12 @@ public class CircleSegment : MonoBehaviour
 
                         // Change colour of block by colour of ball
                         circleSegmentManager.segmentsOrdered[_slice, i+1].GetComponent<SpriteRenderer>().color = other.GetComponent<SpriteRenderer>().color;
+                        // circleSegmentManager.segmentsOrdered[_slice, i+1].GetComponent<SpriteRenderer>().color = other.GetComponent<ProjectileController>().color;
 
+                        
                         // Update color Array
                         circleSegmentManager.colorBlocks[_slice, i+1] = other.GetComponent<SpriteRenderer>().color;
+                        // circleSegmentManager.colorBlocks[_slice, i+1] = other.GetComponent<ProjectileController>().color;
 
                         // ----- TODO: The ball must disappear at the good spot -----
                         Destroy(other.gameObject);

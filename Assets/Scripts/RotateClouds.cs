@@ -19,7 +19,6 @@ public class RotateClouds : MonoBehaviour
             cloud.rotation = Quaternion.Euler(rotation.x, rotation.y, angle);
 
             SpriteRenderer spriteRenderer = cloud.GetComponent<SpriteRenderer>();
-            Debug.Log(spriteRenderer.color);
             // spriteRenderer.color = Color.black;
             spriteRenderer.color = new Color(1f, 1f, 1f, Random.Range(0.8f, 1f));
         }
