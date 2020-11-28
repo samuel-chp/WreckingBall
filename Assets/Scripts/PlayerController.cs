@@ -112,13 +112,13 @@ public class PlayerController : MonoBehaviour
         }
         
         // Animation
-        if (!autoMoveRight && autoMoveLeft){
-            _animator.SetFloat("Speed", 1);
-        } else if (autoMoveRight && !autoMoveLeft) {
-            _animator.SetFloat("Speed", 1);
-        } else {
-            _animator.SetFloat("Speed", Mathf.Abs(Input.GetAxis("Horizontal")));
-        } 
+        // if (!autoMoveRight && autoMoveLeft){
+        //     _animator.SetFloat("Speed", 1);
+        // } else if (autoMoveRight && !autoMoveLeft) {
+        //     _animator.SetFloat("Speed", 1);
+        // } else {
+        //     _animator.SetFloat("Speed", Mathf.Abs(Input.GetAxis("Horizontal")));
+        // } 
     }
 
     private void FixedUpdate()

@@ -626,7 +626,7 @@ MonoBehaviour:
   maxGravity: 30
   gravityOrientation: 1
   jumpForce: 900
-  throwForce: 5
+  throwForce: 2
   jetpackOn: 1
   autoMoveRight: 1
   autoMoveLeft: 0

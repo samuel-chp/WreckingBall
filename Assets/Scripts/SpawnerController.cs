@@ -45,7 +45,7 @@ public class SpawnerController : MonoBehaviour
         //Debug.Log("Outer radius: " + outerRadius);
 
         offset = ballPrefab.GetComponent<CircleCollider2D>().radius;
-        Debug.Log("Offset: " + offset);
+        // Debug.Log("Offset: " + offset);
 
         // Ensure we have acceptable values for public variables
         if( (probabilityAllGenerate<0) || (probabilityAllGenerate>1)){probabilityAllGenerate = 1;} // Probability must be between 0 and 1
