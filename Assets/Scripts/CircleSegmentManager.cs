@@ -22,6 +22,12 @@ public class CircleSegmentManager : MonoBehaviour
     public Color[,] colorBlocks; // Array to keep track of the color by slice and layer
     public GameObject[,] segmentsOrdered; // Array to acces segments by slice and layer
 
+    // Variables for filling mode
+    public int heightFilling; 
+    public int probabilityBlackLastLayer; 
+    public string fillingMode = "normal"; //easy": maximize the chance to have two blocks next to each other
+                                           //"normal": 2 blocks of the same color can be next to each other
+                                           //"hard": 2 blocks of the same color can't be next to each other
 
     /* -------------------------------------------------------------------------------------------------------------------------------------------- 
     -------------------------------------------------- Creating the puzzle game -------------------------------------------------------------------
@@ -76,7 +82,7 @@ public class CircleSegmentManager : MonoBehaviour
         colorBlocks = new Color[nSlice, nLayer]; // Generate 2D array of colors
         segmentsOrdered = new GameObject[nSlice, nLayer]; // Generate 2D array of segments
 
-        Color[,] colorMapping = CreateInitialMapping(5, 3, "normal"); // Generate initial mapping
+        Color[,] colorMapping = CreateInitialMapping(heightFilling, probabilityBlackLastLayer, fillingMode); // Generate initial mapping
 
         for (int i = 0; i < nLayer; i++)
         {
@@ -121,6 +127,7 @@ public class CircleSegmentManager : MonoBehaviour
 
                 // Save segment in array
                 segmentsOrdered[j,i] = segment;
+
             }
         }
     }
