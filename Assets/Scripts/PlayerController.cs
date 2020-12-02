@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
@@ -13,36 +10,19 @@ public class PlayerController : MonoBehaviour
     private SpriteRenderer _spriteRenderer;
     private Animator _animator;
 
-    [Header("Collisions")]
-    [SerializeField] private LayerMask groundLayer;
-
-    public GameObject planet;
-    public GameObject projectile;
-
-    [Header("Gravity")]
-    public float maxGravity;
-    public enum GravityOrientation {Inner = 1, Outer = -1};
-    public GravityOrientation gravityOrientation;
+    [Header("Gravity")] public bool enableGravity = true;
+    public float gravity;
     private Vector3 _gravityDirection;
 
-    [Header("Jump")]
+    [Header("Controls")]
     public float jumpForce;
-    public float throwForce;
-    private bool _isGrounded;
-    public bool jetpackOn;
-    public bool autoMoveRight;
-    public bool autoMoveLeft;
-
-    [Header("Speed")]
     public float speed;
+    public float throwForce;  // For throwing a projectile
     
-    [Header("Miscellaneous")]
-    private bool outOfRange = false;
-
-    public int GetGravitySign()
-    {
-        return (gravityOrientation == GravityOrientation.Inner) ? 1 : -1;
-    }
+    [Header("Others")]
+    [SerializeField] private LayerMask groundLayer;
+    public Transform planet;
+    public GameObject projectile;
 
     // Start is called before the first frame update
     void Start()
@@ -55,133 +35,50 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        int direction = GetGravitySign();
-        _gravityDirection = direction * (planet.transform.position - transform.position).normalized;
-        // Debug.Log("Gravity direction: " + _gravityDirection.ToString());
-        
-        // Freeze rotation in the right direction
-        Vector3 rotation = transform.rotation.eulerAngles;
-        // Debug.Log("Rotation: " + rotation);
-
-        
-        float angle = -Mathf.Sign(transform.position.x - planet.transform.position.x) * 
-                      (Vector3.Angle(new Vector3(0, 1, 0), direction * -_gravityDirection) +
-                       ((gravityOrientation == GravityOrientation.Inner) ? 0: 1) * 180);
-        // Debug.Log("Angle: " + angle);
-        
-        transform.rotation = Quaternion.Euler(rotation.x, rotation.y, angle);
-        // Debug.Log("Quaternion with Euler: " + transform.rotation);
-        
-
-        // Normal jump
-        if (!jetpackOn && _isGrounded && Input.GetKeyDown(KeyCode.UpArrow))
-        {   
-            Vector2 jumpDirection = -_gravityDirection.normalized;
-            _rb.AddForce((jumpForce * 350) * jumpDirection, ForceMode2D.Force);
-            // Debug.Log("Force added on jump: " + (jumpForce * 100) * jumpDirection);
-            gravityOrientation = (gravityOrientation == GravityOrientation.Inner)
-                ? GravityOrientation.Outer
-                : GravityOrientation.Inner;
-            _spriteRenderer.flipX = _spriteRenderer.flipX ? false : true;
-        }
-        
-        // ----- Jetpack jump ----- //
-        // If player is grounded, we may want him to jump higher/lower from ground
-        if (jetpackOn && _isGrounded && (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown("space"))) {
-             Vector2 jumpDirection = -_gravityDirection.normalized;
-            _rb.AddForce((jumpForce * 100) * jumpDirection, ForceMode2D.Force);
-        
-        // Player can't jump if he is too high
-        } else if (jetpackOn && (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown("space")) && !outOfRange) {
-            Vector2 jumpDirection = -_gravityDirection.normalized;
-            _rb.AddForce((jumpForce * 75) * jumpDirection, ForceMode2D.Force); 
-        
-        // If up/space key is not pressed anymore, the player must go down
-        } else if (jetpackOn && !Input.GetKeyDown(KeyCode.UpArrow) && !Input.GetKeyDown("space")) {
-            Vector2 jumpDirection = -_gravityDirection.normalized;
-            // _rb.AddForce(0 * jumpDirection, ForceMode2D.Force);
-            _rb.AddForce(0 * jumpDirection, ForceMode2D.Force);
- 
-        }
-
-        
-        // Orientation
-        if (Input.GetAxisRaw("Horizontal") != 0f)
+        // SOUNDS
+        if (Input.GetKeyDown(KeyCode.A))
         {
-            _spriteRenderer.flipX = Mathf.Sign(GetGravitySign() * Input.GetAxisRaw("Horizontal")) > 0 ? false : true;
+            Debug.Log("Start sound");
+            FindObjectOfType<AudioManager>().Play("Big_Pillow_Shacking");
         }
-        
-        // Animation
-        // if (!autoMoveRight && autoMoveLeft){
-        //     _animator.SetFloat("Speed", 1);
-        // } else if (autoMoveRight && !autoMoveLeft) {
-        //     _animator.SetFloat("Speed", 1);
-        // } else {
-        //     _animator.SetFloat("Speed", Mathf.Abs(Input.GetAxis("Horizontal")));
-        // } 
     }
 
     private void FixedUpdate()
     {
-        float dist = Vector2.Distance(planet.transform.position, transform.position);
-        // Debug.Log("Distance form center: " + dist);
-
-        float outerRadius = GameObject.Find("Planet Top").GetComponent<InnerCircleCollider>().CurrentRadius;
-        float outerScale = GameObject.Find("Planet Top").transform.localScale.x;
-        float realOuterRadius = outerRadius * outerScale;
-        // Debug.Log("Radius of outer circle: " + outerRadius + " and scale: " + outerScale);
-
-        // If player is out of the circle, something may happen
-        if (dist > realOuterRadius - 1.5 * outerRadius){
-            Debug.Log("Almost out of playing zone, there is something to do");
-            outOfRange = true;
-        } else {
-            outOfRange = false;
+        // Get gravity direction
+        _gravityDirection = (planet.transform.position - transform.position).normalized;
+        
+        // Freeze rotation in the right direction
+        if (transform.position.x > planet.position.x)
+        {
+            transform.rotation = Quaternion.Euler(0, 0, -Vector2.Angle(Vector2.up, -_gravityDirection));
         }
-
+        else
+        {
+            transform.rotation = Quaternion.Euler(0, 0, Vector2.Angle(Vector2.up, -_gravityDirection));
+        }
         
-
-        _rb.AddForce(_rb.mass * maxGravity * _gravityDirection);
-        // Debug.Log("Gravity force: " + _rb.mass * maxGravity * _gravityDirection);
+        // GRAVITY
+        if (enableGravity)
+            _rb.AddForce(_rb.mass * gravity * _gravityDirection);
         
-        // Horizontal movement controller
-        float moveHorizontal;
-        // Player control itself with key arrows
-        if (!autoMoveRight && autoMoveLeft){
-            moveHorizontal = -1;
-        } else if (autoMoveRight && !autoMoveLeft) {
-            moveHorizontal = 1;
-        } else {
-            moveHorizontal = Input.GetAxis("Horizontal");
-        } 
-        //Debug.Log("Move horizontal: " + moveHorizontal);
-        
-        Vector2 movementDirection = GetGravitySign() * Vector2.Perpendicular(_gravityDirection).normalized;
-        // Debug.Log("Movement direction: " + movementDirection);
-       
-
-        float movementVelocity = moveHorizontal * (float)2.5 * speed * dist * Time.fixedDeltaTime;
-        // Debug.Log("Movement velocity: " + movementVelocity);
-        // Debug.Log("Movement velocity dot product: " + Vector2.Dot(_rb.velocity, movementDirection));
-        
-
+        // HORIZONTAL MOVEMENT
+        Vector2 movementDirection = Vector2.Perpendicular(_gravityDirection).normalized;
+        // _rb.AddForce(speed * movementDirection);
         _rb.velocity = new Vector2(
-            movementVelocity * movementDirection.x,
-            movementVelocity * movementDirection.y
+            speed * movementDirection.x,
+            speed * movementDirection.y
         );
 
-
-        // Check _isGrounded
-        _isGrounded = false;
-        // The player is grounded if a circlecast to the groundcheck position hits anything designated as ground
-        // This can be done using layers instead but Sample Assets will not overwrite your project settings.
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 0.5f, groundLayer);
-        for (int i = 0; i < colliders.Length; i++)
+        // VERTICAL MOVEMENT
+        if (Input.GetAxisRaw("Vertical") > 0)
         {
-            if (colliders[i].gameObject != gameObject)
-            {
-                _isGrounded = true;
-            }
+            _rb.AddForce(-jumpForce * _gravityDirection);
+        }
+
+        if (Input.GetAxisRaw("Vertical") < 0 && !enableGravity)
+        {
+            _rb.AddForce(jumpForce * _gravityDirection);
         }
     }
 
@@ -190,7 +87,7 @@ public class PlayerController : MonoBehaviour
         Transform egg = Instantiate(projectile.transform, transform.position, transform.rotation);
         egg.GetComponent<SpriteRenderer>().color = source.color;
         Rigidbody2D rb = egg.GetComponent<Rigidbody2D>();
-        rb.velocity = GetGravitySign() * _gravityDirection * throwForce;
+        rb.velocity = _gravityDirection * throwForce;
         
         // Feather burst
         ParticleSystem.MainModule main = featherBurst.main;
