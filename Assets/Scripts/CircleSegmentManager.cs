@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Random=UnityEngine.Random;
-
+using TMPro;
 
 public class CircleSegmentManager : MonoBehaviour
 {   
@@ -29,6 +29,9 @@ public class CircleSegmentManager : MonoBehaviour
                                            //"normal": 2 blocks of the same color can be next to each other
                                            //"hard": 2 blocks of the same color can't be next to each other
 
+    // To move in a Game manager
+    public TextMeshProUGUI gameOverText;
+
     /* -------------------------------------------------------------------------------------------------------------------------------------------- 
     -------------------------------------------------- Creating the puzzle game -------------------------------------------------------------------
     -------------------------------------------------------------------------------------------------------------------------------------------- */
@@ -39,6 +42,9 @@ public class CircleSegmentManager : MonoBehaviour
         GenerateCircleSegments();
         GenerateLineSegment();
         GenerateCircleDelimiter();
+
+        // To move elsewhere
+        gameOverText.gameObject.SetActive(false);
     }
 
     private void GenerateCircleDelimiter()
@@ -704,4 +710,11 @@ public class CircleSegmentManager : MonoBehaviour
     }
  
 
+
+    // Game Over
+    // To move properly in a game manager 
+    public void PlayerLoses(){
+        Time.timeScale = 0;
+        gameOverText.gameObject.SetActive(true);
+    }
 }

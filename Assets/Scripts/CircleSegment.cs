@@ -65,16 +65,12 @@ public class CircleSegment : MonoBehaviour
             CircleSegmentManager circleSegmentManager = GameObject.Find("Planet Bottom").GetComponent<CircleSegmentManager>(); 
 
             // ----- Case when a collision has to be handled ----- //
-            ProjectileController script = other.GetComponent<ProjectileController>();
-            if (script == null){
-                Debug.Log("Null projectile controller");
-            }
-            Vector2Int coordinatesToRetrieve = other.GetComponent<ProjectileController>().GetNextCollisionCoords();
-            if (coordinatesToRetrieve.x < 0){
+            Vector2Int coordinatesToRetrieve = other.GetComponent<TransformedProjectileController>().GetNextCollisionCoords();
+            if (coordinatesToRetrieve.x >= 0){
 
                 // Handle collision only if it is the right segment
-                GameObject segmentToRetrieve = other.GetComponent<ProjectileController>().GetNextCollision();
-                if (segmentToRetrieve == this){
+                GameObject segmentToRetrieve = other.GetComponent<TransformedProjectileController>().GetNextCollision();
+                if (segmentToRetrieve == this.gameObject){
                     
                     // Change colour of block by colour of ball
                     circleSegmentManager.segmentsOrdered[coordinatesToRetrieve.x, coordinatesToRetrieve.y].GetComponent<SpriteRenderer>().color = other.GetComponent<SpriteRenderer>().color;
@@ -98,10 +94,13 @@ public class CircleSegment : MonoBehaviour
                 // Update variables for collision
                 // If the first layer encountered is coloured (not of the color describing an empty block), then the player loses
                 if (circleSegmentManager.segmentsOrdered[_slice, circleSegmentManager.nLayer - 1].GetComponent<SpriteRenderer>().color != circleSegmentManager.segmentColors[0]) {
-                    // ----- TODO: Implement that the player can lose ----- //
-                    // PlayerLoses();
+                    
                     collision_handled = true;
                     Destroy(other.gameObject);
+
+                    // Player looses
+                    circleSegmentManager.PlayerLoses();
+                    
 
                 // Normal case
                 } else if (!collision_handled) {
@@ -125,7 +124,7 @@ public class CircleSegment : MonoBehaviour
                                 circleSegmentManager.ManageMatching(_slice, i+1);
                             } else {
                                 // Indicate the corresponding layer to game object to handle collision at the right spot
-                                other.GetComponent<ProjectileController>().SetNextCollision(new Vector2Int(_slice, i+1), circleSegmentManager.segmentsOrdered[_slice, i+1]);
+                                other.GetComponent<TransformedProjectileController>().SetNextCollision(new Vector2Int(_slice, i+1), circleSegmentManager.segmentsOrdered[_slice, i+1]);
                             }
                             
                             collision_handled = true;
@@ -153,4 +152,6 @@ public class CircleSegment : MonoBehaviour
 
         }
     }
+
+    
 }
