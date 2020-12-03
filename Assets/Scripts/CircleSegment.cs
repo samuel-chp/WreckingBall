@@ -19,6 +19,7 @@ public class CircleSegment : MonoBehaviour
     private int _slice;
     private int _layer;
 
+
     public void Initialize(float innerRadius, float outerRadius, float startAngle, float endAngle, int slice, int layer)
     {
         float angleOffset = Mathf.Asin(offset / innerRadius);
@@ -57,56 +58,91 @@ public class CircleSegment : MonoBehaviour
     // Collider only with first segment encountered for now
     private void OnTriggerEnter2D(Collider2D other)
     {
+        
         if (other.CompareTag("Projectile"))
         {   
-            bool collision_handled = false; 
-
             // Access to circleSegmentManager attributes
             CircleSegmentManager circleSegmentManager = GameObject.Find("Planet Bottom").GetComponent<CircleSegmentManager>(); 
 
-            // If the first layer encountered is coloured (not of the color describing an empty block), then the player loses
-            if (circleSegmentManager.segmentsOrdered[_slice, circleSegmentManager.nLayer - 1].GetComponent<SpriteRenderer>().color != circleSegmentManager.segmentColors[0]) {
-                // ----- TODO: Implement that the player can lose ----- //
-                // PlayerLoses();
-                collision_handled = true;
-                Destroy(other.gameObject);
+            // ----- Case when a collision has to be handled ----- //
+            ProjectileController script = other.GetComponent<ProjectileController>();
+            if (script == null){
+                Debug.Log("Null projectile controller");
+            }
+            Vector2Int coordinatesToRetrieve = other.GetComponent<ProjectileController>().GetNextCollisionCoords();
+            if (coordinatesToRetrieve.x < 0){
 
-            // Normal case
-            } else if (!collision_handled) {
+                // Handle collision only if it is the right segment
+                GameObject segmentToRetrieve = other.GetComponent<ProjectileController>().GetNextCollision();
+                if (segmentToRetrieve == this){
+                    
+                    // Change colour of block by colour of ball
+                    circleSegmentManager.segmentsOrdered[coordinatesToRetrieve.x, coordinatesToRetrieve.y].GetComponent<SpriteRenderer>().color = other.GetComponent<SpriteRenderer>().color;
+                                        
+                    // Update color Array
+                    circleSegmentManager.colorBlocks[coordinatesToRetrieve.x, coordinatesToRetrieve.y] = other.GetComponent<SpriteRenderer>().color;
 
-                // Loop on all segments (layer) of the current slice to find the uncolored segment that is the closest one
-                for (int i = circleSegmentManager.nLayer - 2; i >= 0 ; i--) {
-                    if (!collision_handled && circleSegmentManager.segmentsOrdered[_slice, i].GetComponent<SpriteRenderer>().color != circleSegmentManager.segmentColors[0]) {
+                    // ----- TODO: The ball must disappear at the good spot -----
+                    Destroy(other.gameObject);
 
-                        // Change colour of block by colour of ball
-                        circleSegmentManager.segmentsOrdered[_slice, i+1].GetComponent<SpriteRenderer>().color = other.GetComponent<SpriteRenderer>().color;
-                        // circleSegmentManager.segmentsOrdered[_slice, i+1].GetComponent<SpriteRenderer>().color = other.GetComponent<ProjectileController>().color;
+                    // Manage matching of blocks
+                    circleSegmentManager.ManageMatching(coordinatesToRetrieve.x, coordinatesToRetrieve.y);
+                }
+            }
+            
+            // ----- Case when collision is not yet handled ----- //
+            else {
+                
+                bool collision_handled = false; 
 
-                        
-                        // Update color Array
-                        circleSegmentManager.colorBlocks[_slice, i+1] = other.GetComponent<SpriteRenderer>().color;
-                        // circleSegmentManager.colorBlocks[_slice, i+1] = other.GetComponent<ProjectileController>().color;
+                // Update variables for collision
+                // If the first layer encountered is coloured (not of the color describing an empty block), then the player loses
+                if (circleSegmentManager.segmentsOrdered[_slice, circleSegmentManager.nLayer - 1].GetComponent<SpriteRenderer>().color != circleSegmentManager.segmentColors[0]) {
+                    // ----- TODO: Implement that the player can lose ----- //
+                    // PlayerLoses();
+                    collision_handled = true;
+                    Destroy(other.gameObject);
 
-                        // ----- TODO: The ball must disappear at the good spot -----
-                        Destroy(other.gameObject);
+                // Normal case
+                } else if (!collision_handled) {
 
-                        // Manage matching of blocks
-                        circleSegmentManager.ManageMatching(_slice, i+1);
+                    // Loop on all segments (layer) of the current slice to find the uncolored segment that is the closest one
+                    for (int i = circleSegmentManager.nLayer - 2; i >= 0 ; i--) {
+                        if (!collision_handled && circleSegmentManager.segmentsOrdered[_slice, i].GetComponent<SpriteRenderer>().color != circleSegmentManager.segmentColors[0]) {
+                            
+                            // Handle the collision immediately if it has too
+                            if (i == circleSegmentManager.nLayer - 2){
+                                // Change colour of block by colour of ball
+                                circleSegmentManager.segmentsOrdered[_slice, i+1].GetComponent<SpriteRenderer>().color = other.GetComponent<SpriteRenderer>().color;
+                                                    
+                                // Update color Array
+                                circleSegmentManager.colorBlocks[_slice, i+1] = other.GetComponent<SpriteRenderer>().color;
 
-                        collision_handled = true;
+                                // ----- TODO: The ball must disappear at the good spot -----
+                                Destroy(other.gameObject);
+
+                                // Manage matching of blocks
+                                circleSegmentManager.ManageMatching(_slice, i+1);
+                            } else {
+                                // Indicate the corresponding layer to game object to handle collision at the right spot
+                                other.GetComponent<ProjectileController>().SetNextCollision(new Vector2Int(_slice, i+1), circleSegmentManager.segmentsOrdered[_slice, i+1]);
+                            }
+                            
+                            collision_handled = true;
+                        }
                     }
+
+                // If the player can reach the core of the planet
+                } else if (!collision_handled) {
+
+                    // ----- TODO: Boss lose a life point ----- //
+                    // ----- TODO: Update to phase 2 or 3 of Boss fight ----- //
+
+                    collision_handled = true;
+
                 }
 
-            // If the player can reach the core of the planet
-            } else if (!collision_handled) {
-
-                // ----- TODO: Boss lose a life point ----- //
-                // ----- TODO: Update to phase 2 or 3 of Boss fight ----- //
-
-                collision_handled = true;
-
             }
-
             
 
 
@@ -114,9 +150,6 @@ public class CircleSegment : MonoBehaviour
             GetComponent<SpriteRenderer>().color = other.GetComponent<SpriteRenderer>().color;
             Destroy(other.gameObject);
             */
-            
-
-            
 
         }
     }

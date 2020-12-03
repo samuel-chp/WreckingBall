@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 8903711115931551043}
   m_Layer: 0
   m_Name: feather
-  m_TagString: Untagged
+  m_TagString: Projectile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -76,7 +76,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: -1
   m_Sprite: {fileID: 21300000, guid: 53d5e2e03b310054c8306c2185b7ab76, type: 3}
-  m_Color: {r: 0.8235295, g: 0.83921576, b: 0.41176474, a: 1}
+  m_Color: {r: 0.12941177, g: 0.60784316, b: 0.5921569, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -98,7 +98,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28ad03808d61a634e9e64e90372ff4a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  color: {r: 1, g: 0, b: 0, a: 1}
 --- !u!50 &8903711115931551068
 Rigidbody2D:
   serializedVersion: 4

@@ -85,13 +85,13 @@ public class PlayerController : MonoBehaviour
     public void ThrowProjectile(ProjectileController source)
     {
         Transform egg = Instantiate(projectile.transform, transform.position, transform.rotation);
-        egg.GetComponent<SpriteRenderer>().color = source.color;
+        egg.GetComponent<SpriteRenderer>().color = source.GetComponent<SpriteRenderer>().color;
         Rigidbody2D rb = egg.GetComponent<Rigidbody2D>();
         rb.velocity = _gravityDirection * throwForce;
         
         // Feather burst
         ParticleSystem.MainModule main = featherBurst.main;
-        main.startColor = source.color;
+        main.startColor = source.GetComponent<SpriteRenderer>().color;
         featherBurst.Play();
     }
 }
