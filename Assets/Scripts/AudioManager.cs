@@ -8,6 +8,11 @@ public class AudioManager : MonoBehaviour
     
     // OSC Connexion
     private OSCTransmitter _transmitter;
+    
+    // Puredata
+    public int currentIndex = 0;
+    public int maxIndex = 2;
+    
 
     public static AudioManager Instance;
 
@@ -29,6 +34,22 @@ public class AudioManager : MonoBehaviour
         _transmitter = GetComponent<OSCTransmitter>();
     }
 
+    private void Update()
+    {
+        // SOUNDS
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            Debug.Log("Start sound");
+            Play("Music");
+        }
+        if (Input.GetKeyDown(KeyCode.Z))
+        {
+            Debug.Log("Start sound");
+            Play("Big_Pillow_Shacking");
+        }
+        
+    }
+
     public void Play(string soundName)
     {
         // Find sound
@@ -39,11 +60,21 @@ public class AudioManager : MonoBehaviour
             return;
         }
         
+        if (currentIndex + 1 <= maxIndex)
+        {
+            currentIndex += 1;
+        }
+        else
+        {
+            currentIndex = 0;
+        }
+        
         // Play sound
         // Create message
         var message = new OSCMessage("/playSound");
         // Populate values.
-        message.AddValue(OSCValue.String("Default"));
+        message.AddValue(OSCValue.Float((float)currentIndex));
+        message.AddValue(OSCValue.String("useless"));  
         message.AddValue(OSCValue.String(s.absolutePath));      // filename
         message.AddValue(OSCValue.Float(s.volume)); // volume 
         message.AddValue(OSCValue.Float(s.pitch));  // pitch

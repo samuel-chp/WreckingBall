@@ -1272,7 +1272,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 763425182}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 464088183d2a1484ab8fb64e356c9f5c, type: 3}
   m_Name: 
@@ -1296,7 +1296,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 763425182}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 71398f8e84283554ab90db61354fc34e, type: 3}
   m_Name: 
@@ -1306,6 +1306,12 @@ MonoBehaviour:
     absolutePath: Big_Pillow_Shacking.wav
     volume: 1
     pitch: 1
+  - soundName: Music
+    absolutePath: music.wav
+    volume: 1
+    pitch: 0.5
+  currentIndex: 0
+  maxIndex: 2
 --- !u!4 &763425185
 Transform:
   m_ObjectHideFlags: 0

@@ -7,8 +7,6 @@ public class PlayerController : MonoBehaviour
     
     [Header("Renderer")]
     public ParticleSystem featherBurst;
-    private SpriteRenderer _spriteRenderer;
-    private Animator _animator;
 
     [Header("Gravity")] public bool enableGravity = true;
     public float gravity;
@@ -28,19 +26,12 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         _rb = GetComponent<Rigidbody2D>();
-        _spriteRenderer = GetComponent<SpriteRenderer>();
-        _animator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        // SOUNDS
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            Debug.Log("Start sound");
-            FindObjectOfType<AudioManager>().Play("Big_Pillow_Shacking");
-        }
+        
     }
 
     private void FixedUpdate()
