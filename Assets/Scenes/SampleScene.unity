@@ -1310,6 +1310,18 @@ MonoBehaviour:
     absolutePath: music.wav
     volume: 1
     pitch: 0.5
+  - soundName: Bounce
+    absolutePath: zapsplat_cartoon_impact_bounce_thud.wav
+    volume: 0.7
+    pitch: 1
+  - soundName: Wobble
+    absolutePath: zapsplat_cartoon_impact_thud_wobble.wav
+    volume: 1
+    pitch: 1
+  - soundName: Woosh
+    absolutePath: zapsplat_cartoon_whoosh_whip_away.wav
+    volume: 1
+    pitch: 1
   currentIndex: 0
   maxIndex: 2
 --- !u!4 &763425185
@@ -3466,11 +3478,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1638111624, guid: 2221fddfa218d9e4b8fd8d9d0a054505, type: 3}
       propertyPath: nLayer
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 1638111624, guid: 2221fddfa218d9e4b8fd8d9d0a054505, type: 3}
       propertyPath: nSlice
-      value: 8
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1638111624, guid: 2221fddfa218d9e4b8fd8d9d0a054505, type: 3}
       propertyPath: gameOverText
@@ -3483,6 +3495,70 @@ PrefabInstance:
     - target: {fileID: 1638111624, guid: 2221fddfa218d9e4b8fd8d9d0a054505, type: 3}
       propertyPath: probabilityBlackLastLayer
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1638111624, guid: 2221fddfa218d9e4b8fd8d9d0a054505, type: 3}
+      propertyPath: segmentColors.Array.data[0].a
+      value: 0.019607844
+      objectReference: {fileID: 0}
+    - target: {fileID: 1638111624, guid: 2221fddfa218d9e4b8fd8d9d0a054505, type: 3}
+      propertyPath: segmentColors.Array.data[1].b
+      value: 0.92941177
+      objectReference: {fileID: 0}
+    - target: {fileID: 1638111624, guid: 2221fddfa218d9e4b8fd8d9d0a054505, type: 3}
+      propertyPath: segmentColors.Array.data[1].g
+      value: 0.74509805
+      objectReference: {fileID: 0}
+    - target: {fileID: 1638111624, guid: 2221fddfa218d9e4b8fd8d9d0a054505, type: 3}
+      propertyPath: segmentColors.Array.data[1].r
+      value: 0.8980392
+      objectReference: {fileID: 0}
+    - target: {fileID: 1638111624, guid: 2221fddfa218d9e4b8fd8d9d0a054505, type: 3}
+      propertyPath: segmentColors.Array.data[2].b
+      value: 0.59607846
+      objectReference: {fileID: 0}
+    - target: {fileID: 1638111624, guid: 2221fddfa218d9e4b8fd8d9d0a054505, type: 3}
+      propertyPath: segmentColors.Array.data[2].g
+      value: 0.19215687
+      objectReference: {fileID: 0}
+    - target: {fileID: 1638111624, guid: 2221fddfa218d9e4b8fd8d9d0a054505, type: 3}
+      propertyPath: segmentColors.Array.data[2].r
+      value: 0.2784314
+      objectReference: {fileID: 0}
+    - target: {fileID: 1638111624, guid: 2221fddfa218d9e4b8fd8d9d0a054505, type: 3}
+      propertyPath: segmentColors.Array.data[3].b
+      value: 0.23529412
+      objectReference: {fileID: 0}
+    - target: {fileID: 1638111624, guid: 2221fddfa218d9e4b8fd8d9d0a054505, type: 3}
+      propertyPath: segmentColors.Array.data[3].g
+      value: 0.13725491
+      objectReference: {fileID: 0}
+    - target: {fileID: 1638111624, guid: 2221fddfa218d9e4b8fd8d9d0a054505, type: 3}
+      propertyPath: segmentColors.Array.data[3].r
+      value: 0.9372549
+      objectReference: {fileID: 0}
+    - target: {fileID: 1638111624, guid: 2221fddfa218d9e4b8fd8d9d0a054505, type: 3}
+      propertyPath: segmentColors.Array.data[4].b
+      value: 0.7137255
+      objectReference: {fileID: 0}
+    - target: {fileID: 1638111624, guid: 2221fddfa218d9e4b8fd8d9d0a054505, type: 3}
+      propertyPath: segmentColors.Array.data[4].g
+      value: 0.76862746
+      objectReference: {fileID: 0}
+    - target: {fileID: 1638111624, guid: 2221fddfa218d9e4b8fd8d9d0a054505, type: 3}
+      propertyPath: segmentColors.Array.data[4].r
+      value: 0.18039216
+      objectReference: {fileID: 0}
+    - target: {fileID: 1638111624, guid: 2221fddfa218d9e4b8fd8d9d0a054505, type: 3}
+      propertyPath: segmentColors.Array.data[5].b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1638111624, guid: 2221fddfa218d9e4b8fd8d9d0a054505, type: 3}
+      propertyPath: segmentColors.Array.data[5].g
+      value: 0.9647059
+      objectReference: {fileID: 0}
+    - target: {fileID: 1638111624, guid: 2221fddfa218d9e4b8fd8d9d0a054505, type: 3}
+      propertyPath: segmentColors.Array.data[5].r
+      value: 0.9411765
       objectReference: {fileID: 0}
     - target: {fileID: 3542982861701958131, guid: 2221fddfa218d9e4b8fd8d9d0a054505,
         type: 3}

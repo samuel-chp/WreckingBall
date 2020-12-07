@@ -5,7 +5,9 @@ using UnityEngine;
 
 public class CircleSegment : MonoBehaviour
 {
-    private PolygonCollider2D _polygonCollider;
+    public PolygonCollider2D polygonCollider;
+    private SpriteRenderer _spriteRenderer;
+    private CircleSegmentAnimation _animator;
     
     [SerializeField] private int numPoints;
     [SerializeField] private float offset;
@@ -18,10 +20,19 @@ public class CircleSegment : MonoBehaviour
     // To keep track of the location of the circle Segment
     private int _slice;
     private int _layer;
-
+    
+    // To know which color corresponds to a disabled circlesegment
+    private Color _disabledColor;
+    public Color oldColor = Color.black;
 
     public void Initialize(float innerRadius, float outerRadius, float startAngle, float endAngle, int slice, int layer)
     {
+        // Init variables (Do not put this in start because of order of execution with CircleSegmentManager's start function)
+        _spriteRenderer = GetComponent<SpriteRenderer>();
+        _animator = GetComponent<CircleSegmentAnimation>();
+        _disabledColor = FindObjectOfType<CircleSegmentManager>().segmentColors[0];
+        
+        // Init GFX and collider
         float angleOffset = Mathf.Asin(offset / innerRadius);
         _innerRadius = innerRadius + offset;
         _outerRadius = outerRadius - offset;
@@ -30,7 +41,7 @@ public class CircleSegment : MonoBehaviour
         _slice = slice;
         _layer = layer;
         
-        _polygonCollider = GetComponent<PolygonCollider2D>();
+        polygonCollider = GetComponent<PolygonCollider2D>();
         
         CreateCustomCollider();
     }
@@ -51,7 +62,7 @@ public class CircleSegment : MonoBehaviour
             points[i] = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * _outerRadius;
         }
 
-        _polygonCollider.points = points;
+        polygonCollider.points = points;
     }
 
 
@@ -73,8 +84,8 @@ public class CircleSegment : MonoBehaviour
                 if (segmentToRetrieve == this.gameObject){
                     
                     // Change colour of block by colour of ball
-                    circleSegmentManager.segmentsOrdered[coordinatesToRetrieve.x, coordinatesToRetrieve.y].GetComponent<SpriteRenderer>().color = other.GetComponent<SpriteRenderer>().color;
-                                        
+                    circleSegmentManager.segmentsOrdered[coordinatesToRetrieve.x, coordinatesToRetrieve.y].ChangeColor(other.GetComponent<SpriteRenderer>().color);
+
                     // Update color Array
                     circleSegmentManager.colorBlocks[coordinatesToRetrieve.x, coordinatesToRetrieve.y] = other.GetComponent<SpriteRenderer>().color;
 
@@ -93,7 +104,7 @@ public class CircleSegment : MonoBehaviour
 
                 // Update variables for collision
                 // If the first layer encountered is coloured (not of the color describing an empty block), then the player loses
-                if (circleSegmentManager.segmentsOrdered[_slice, circleSegmentManager.nLayer - 1].GetComponent<SpriteRenderer>().color != circleSegmentManager.segmentColors[0]) {
+                if (circleSegmentManager.segmentsOrdered[_slice, circleSegmentManager.nLayer - 1].GetColor() != circleSegmentManager.segmentColors[0]) {
                     
                     collision_handled = true;
                     Destroy(other.gameObject);
@@ -107,12 +118,12 @@ public class CircleSegment : MonoBehaviour
 
                     // Loop on all segments (layer) of the current slice to find the uncolored segment that is the closest one
                     for (int i = circleSegmentManager.nLayer - 2; i >= 0 ; i--) {
-                        if (!collision_handled && circleSegmentManager.segmentsOrdered[_slice, i].GetComponent<SpriteRenderer>().color != circleSegmentManager.segmentColors[0]) {
+                        if (!collision_handled && circleSegmentManager.segmentsOrdered[_slice, i].GetColor() != circleSegmentManager.segmentColors[0]) {
                             
                             // Handle the collision immediately if it has too
                             if (i == circleSegmentManager.nLayer - 2){
                                 // Change colour of block by colour of ball
-                                circleSegmentManager.segmentsOrdered[_slice, i+1].GetComponent<SpriteRenderer>().color = other.GetComponent<SpriteRenderer>().color;
+                                circleSegmentManager.segmentsOrdered[_slice, i+1].ChangeColor(other.GetComponent<SpriteRenderer>().color);
                                                     
                                 // Update color Array
                                 circleSegmentManager.colorBlocks[_slice, i+1] = other.GetComponent<SpriteRenderer>().color;
@@ -124,7 +135,7 @@ public class CircleSegment : MonoBehaviour
                                 circleSegmentManager.ManageMatching(_slice, i+1);
                             } else {
                                 // Indicate the corresponding layer to game object to handle collision at the right spot
-                                other.GetComponent<TransformedProjectileController>().SetNextCollision(new Vector2Int(_slice, i+1), circleSegmentManager.segmentsOrdered[_slice, i+1]);
+                                other.GetComponent<TransformedProjectileController>().SetNextCollision(new Vector2Int(_slice, i+1), circleSegmentManager.segmentsOrdered[_slice, i+1].gameObject);
                             }
                             
                             collision_handled = true;
@@ -153,5 +164,31 @@ public class CircleSegment : MonoBehaviour
         }
     }
 
-    
+    public Color GetColor()
+    {
+        return _spriteRenderer.color;
+    }
+
+    public void ChangeColor(Color color, bool playAnimation = true)
+    {
+        _spriteRenderer.color = color;
+        
+        if (color != _disabledColor)
+        {
+            oldColor = color;
+            if (playAnimation)
+                _animator.PlayAnimation("scaleUp&Down");
+        }
+        else
+        {
+            if (playAnimation)
+                _animator.PlayAnimation("explode");
+        }
+    }
+
+    public void EnableCollider(bool enable)
+    {
+        // TODO: verify that it doesn't break the game
+        polygonCollider.enabled = enable;
+    }
 }

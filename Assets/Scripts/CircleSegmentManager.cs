@@ -17,10 +17,10 @@ public class CircleSegmentManager : MonoBehaviour
     public int nLayer;
     public int nSlice;
 
-    [SerializeField] public Color[] segmentColors; //Convention: first color = "empty" color (Black by default)
+    public Color[] segmentColors; //Convention: first color = "empty" color (Black by default)
 
     public Color[,] colorBlocks; // Array to keep track of the color by slice and layer
-    public GameObject[,] segmentsOrdered; // Array to acces segments by slice and layer
+    public CircleSegment[,] segmentsOrdered; // Array to access segments by slice and layer
 
     // Variables for filling mode
     public int heightFilling; 
@@ -86,7 +86,7 @@ public class CircleSegmentManager : MonoBehaviour
         int order = nLayer*nSlice + 1;  // Careful : planetCore orderInLayer must be greater than this one
 
         colorBlocks = new Color[nSlice, nLayer]; // Generate 2D array of colors
-        segmentsOrdered = new GameObject[nSlice, nLayer]; // Generate 2D array of segments
+        segmentsOrdered = new CircleSegment[nSlice, nLayer]; // Generate 2D array of segments
 
         Color[,] colorMapping = CreateInitialMapping(heightFilling, probabilityBlackLastLayer, fillingMode); // Generate initial mapping
 
@@ -97,18 +97,14 @@ public class CircleSegmentManager : MonoBehaviour
                 GameObject segment = Instantiate(circleSegmentPrefab, transform);
                 SpriteRenderer renderer = segment.GetComponent<SpriteRenderer>();
                 Material segmentMaterial = renderer.material;
-                
+                CircleSegment circleSegment = segment.GetComponent<CircleSegment>();
+
                 // Size
                 segment.transform.localScale =
                     planetCore.transform.localScale + (i + 1) * new Vector3(unitScale, unitScale, unitScale);
 
                 // Layer
                 renderer.sortingOrder = order;
-
-                // Color
-                // renderer.color = segmentColors[order % segmentColors.Length]; // Replace by a better chosen color
-                renderer.color = colorMapping[j,i];
-                colorBlocks[j,i] = renderer.color; // Update color 
 
                 // Shader for creating an arc
                 segmentMaterial.SetFloat("_Angle", unitAngle);
@@ -118,7 +114,7 @@ public class CircleSegmentManager : MonoBehaviour
                 segment.transform.rotation = Quaternion.Euler(0f, 0f, rotate * Mathf.Rad2Deg);
                 
                 // Setting the collider
-                CircleSegment circleSegment = segment.GetComponent<CircleSegment>();
+                // CircleSegment circleSegment = segment.GetComponent<CircleSegment>();
                 float angle = j*2*unitAngle;
                 circleSegment.Initialize(
                     0.5f*(planetCore.transform.localScale.x + i * unitScale)/(segment.transform.localScale.x), // innerRadius
@@ -128,11 +124,16 @@ public class CircleSegmentManager : MonoBehaviour
                     j, // slice
                     i //layer
                     );
+                
+                // Color
+                // renderer.color = segmentColors[order % segmentColors.Length]; // Replace by a better chosen color
+                circleSegment.ChangeColor(colorMapping[j,i], false);
+                colorBlocks[j,i] = renderer.color; // Update color 
 
                 order -= 1;
 
                 // Save segment in array
-                segmentsOrdered[j,i] = segment;
+                segmentsOrdered[j,i] = circleSegment;
 
             }
         }
@@ -668,7 +669,8 @@ public class CircleSegmentManager : MonoBehaviour
 
             // Replace the color of all Matching blocks by black
             colorBlocks[position.x, position.y] = segmentColors[0];
-            segmentsOrdered[position.x, position.y].GetComponent<SpriteRenderer>().color = segmentColors[0];
+            segmentsOrdered[position.x, position.y].ChangeColor(segmentColors[0]);
+            Debug.Log("removed !");
 
             /* There is nothing to do if 
                 * the removed block is at the top of a column
@@ -686,11 +688,11 @@ public class CircleSegmentManager : MonoBehaviour
 
                         // Update block color
                         colorBlocks[position.x, i] = colorBlocks[position.x, i + 1];
-                        segmentsOrdered[position.x, i].GetComponent<SpriteRenderer>().color = colorBlocks[position.x, i + 1];
+                        segmentsOrdered[position.x, i].ChangeColor(colorBlocks[position.x, i + 1]);
 
                         // Empty block on top
                         colorBlocks[position.x, i + 1] = segmentColors[0];
-                        segmentsOrdered[position.x, i + 1].GetComponent<SpriteRenderer>().color = segmentColors[0];
+                        segmentsOrdered[position.x, i + 1].ChangeColor(segmentColors[0]);
 
                     }
                 }
