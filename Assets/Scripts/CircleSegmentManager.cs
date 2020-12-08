@@ -12,6 +12,7 @@ public class CircleSegmentManager : MonoBehaviour
     [SerializeField] private GameObject circleDelimiterPrefab;
     [SerializeField] private GameObject lineSegmentPrefab;
     [SerializeField] private GameObject circleSegmentPrefab;
+    [SerializeField] private GameObject spawnerPrefab;
     public GameObject planetCore;
     
     public int nLayer;
@@ -26,10 +27,13 @@ public class CircleSegmentManager : MonoBehaviour
     public int heightFilling; 
     public int probabilityBlackLastLayer; 
     public string fillingMode = "normal"; //easy": maximize the chance to have two blocks next to each other
-                                           //"normal": 2 blocks of the same color can be next to each other
-                                           //"hard": 2 blocks of the same color can't be next to each other
+                                          //"normal": 2 blocks of the same color can be next to each other
+                                          //"hard": 2 blocks of the same color can't be next to each other
 
     // To move in a Game manager
+    public GameObject planetTop;
+    public int numberLane = 3; // Number of lanes to play with
+    private List<float> lanesDist; // To store domain for each lane
     public TextMeshProUGUI gameOverText;
 
     /* -------------------------------------------------------------------------------------------------------------------------------------------- 
@@ -39,8 +43,10 @@ public class CircleSegmentManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        lanesDist = new List<float>();
+
         GenerateCircleSegments();
-        GenerateLineSegment();
+        GenerateLineSegmentAndSpawners();
         GenerateCircleDelimiter();
 
         // To move elsewhere
@@ -62,8 +68,16 @@ public class CircleSegmentManager : MonoBehaviour
         }
     }
 
-    private void GenerateLineSegment()
+    private void GenerateLineSegmentAndSpawners()
     {
+        float innerRadius = planetTop.GetComponent<InnerCircleCollider>().Radius * GameObject.Find("Planet Bottom").transform.localScale.x;
+        float outerRadius = planetTop.GetComponent<InnerCircleCollider>().Radius * GameObject.Find("Planet Top").transform.localScale.x;
+        float distStep = (outerRadius - innerRadius) / numberLane;
+        for (int i = 0; i < numberLane; i++)
+        {
+            lanesDist.Add(innerRadius + 0.5f * distStep + i * distStep);
+        }
+
         var unitAngle = 2*Math.PI / nSlice;
         var radius = GetComponent<SpriteRenderer>().bounds.size[0] / 2;
         for (int i = 0; i < nSlice; i++)
@@ -76,6 +90,16 @@ public class CircleSegmentManager : MonoBehaviour
                 radius * Mathf.Sin((float)angle),
                 0f
                 ));
+
+            //Instantiate a line of spawners
+            foreach (float dist in lanesDist)
+            {
+                Vector3 spawnPosition = new Vector3(
+                dist * Mathf.Cos((float)(angle + unitAngle/2)),
+                dist * Mathf.Sin((float)(angle + unitAngle / 2)),
+                0f);
+                Instantiate(spawnerPrefab, spawnPosition, Quaternion.identity);
+            }
         }
     }
 

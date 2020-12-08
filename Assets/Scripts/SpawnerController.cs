@@ -39,8 +39,8 @@ public class SpawnerController : MonoBehaviour
     void Start()
     {
         colorBalls = GameObject.Find("Planet Bottom").GetComponent<CircleSegmentManager>().segmentColors;
-        innerRadius = GameObject.Find("Planet Top").GetComponent<InnerCircleCollider>().CurrentRadius * GameObject.Find("Planet Bottom").transform.localScale.x;
-        outerRadius = GameObject.Find("Planet Top").GetComponent<InnerCircleCollider>().CurrentRadius * GameObject.Find("Planet Top").transform.localScale.x;
+        innerRadius = GameObject.Find("Planet Top").GetComponent<InnerCircleCollider>().Radius * GameObject.Find("Planet Bottom").transform.localScale.x;
+        outerRadius = GameObject.Find("Planet Top").GetComponent<InnerCircleCollider>().Radius * GameObject.Find("Planet Top").transform.localScale.x;
         //Debug.Log("Inner radius: " + innerRadius);
         //Debug.Log("Outer radius: " + outerRadius);
 
