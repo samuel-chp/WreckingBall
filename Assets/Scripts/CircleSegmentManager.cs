@@ -7,43 +7,58 @@ using Random=UnityEngine.Random;
 using TMPro;
 
 public class CircleSegmentManager : MonoBehaviour
-{   
+{
+    private GameManager gameManager;
+
     // Attributes
     [SerializeField] private GameObject circleDelimiterPrefab;
     [SerializeField] private GameObject lineSegmentPrefab;
     [SerializeField] private GameObject circleSegmentPrefab;
     [SerializeField] private GameObject spawnerPrefab;
-    public GameObject planetCore;
+   
     
-    public int nLayer;
-    public int nSlice;
-
-    public Color[] segmentColors; //Convention: first color = "empty" color (Black by default)
-
     public Color[,] colorBlocks; // Array to keep track of the color by slice and layer
     public CircleSegment[,] segmentsOrdered; // Array to access segments by slice and layer
+    private List<float> lanesDist; // To store domain for each lane
 
     // Variables for filling mode
-    public int heightFilling; 
-    public int probabilityBlackLastLayer; 
-    public string fillingMode = "normal"; //easy": maximize the chance to have two blocks next to each other
+    private int heightFilling;
+    private int probabilityBlackLastLayer;
+    private string fillingMode = "normal"; //easy": maximize the chance to have two blocks next to each other
                                           //"normal": 2 blocks of the same color can be next to each other
                                           //"hard": 2 blocks of the same color can't be next to each other
 
-    // To move in a Game manager
-    public GameObject planetTop;
-    public int numberLane = 3; // Number of lanes to play with
-    private List<float> lanesDist; // To store domain for each lane
-    public TextMeshProUGUI gameOverText;
+    // In GameManager
+    private GameObject planetTop;
+    private GameObject planetCore;
+    private int numberLane = 3; // Number of lanes to play with
+    private TextMeshProUGUI gameOverText;
+    private int nLayer;
+    private int nSlice;
+
+    private Color[] segmentColors; //Convention: first color = "empty" color (Black by default)
+
 
     /* -------------------------------------------------------------------------------------------------------------------------------------------- 
     -------------------------------------------------- Creating the puzzle game -------------------------------------------------------------------
     -------------------------------------------------------------------------------------------------------------------------------------------- */
-    
+
     // Start is called before the first frame update
     void Start()
     {
+        gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
         lanesDist = new List<float>();
+        
+        nLayer = gameManager.nLayer;
+        nSlice = gameManager.nSlice;
+        segmentColors = gameManager.segmentColors;
+        heightFilling = gameManager.heightFilling;
+        probabilityBlackLastLayer = gameManager.probabilityBlackLastLayer;
+        fillingMode = gameManager.fillingMode;
+        planetTop = gameManager.planetTop;
+        planetCore = gameManager.planetCore;
+        numberLane = gameManager.numberLane;
+        gameOverText = gameManager.gameOverText;
 
         GenerateCircleSegments();
         GenerateLineSegmentAndSpawners();

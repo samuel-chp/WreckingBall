@@ -451,6 +451,73 @@ Transform:
   m_Father: {fileID: 1537202492}
   m_RootOrder: 21
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &249197964
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 249197966}
+  - component: {fileID: 249197965}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: GameManager
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &249197965
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 249197964}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b81ccc76de2944a41b67b50b3d75b60b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  levelsAsset: {fileID: 4900000, guid: dd33d7ac508707745be5c620718ffb1f, type: 3}
+  levelChosen: 1
+  nLayer: 6
+  nSlice: 6
+  numberLane: 4
+  segmentColors:
+  - {r: 0, g: 0, b: 0, a: 0}
+  - {r: 1, g: 0.97219944, b: 0, a: 1}
+  - {r: 0, g: 0.7813556, b: 1, a: 1}
+  - {r: 1, g: 0.33602917, b: 0, a: 1}
+  - {r: 0.9078951, g: 0, b: 1, a: 1}
+  heightFilling: 5
+  probabilityBlackLastLayer: 3
+  fillingMode: normal
+  planetTop: {fileID: 366181701}
+  planetCore: {fileID: 399048131}
+  projectile: {fileID: 8512364830569300270, guid: 839eab331366d5a4a80a95097a7aea4b,
+    type: 3}
+  gameOverText: {fileID: 1486185514}
+  enableGravity: 1
+  gravity: 2000
+  jumpForce: 5000
+  speed: 2
+  throwForce: 2
+--- !u!4 &249197966
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 249197964}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.2670509, y: 2.3408453, z: -2.7734308}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &252259544
 GameObject:
   m_ObjectHideFlags: 0
@@ -586,17 +653,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   featherBurst: {fileID: 1751189046}
-  enableGravity: 1
-  gravity: 2000
-  jumpForce: 5000
-  speed: 2
-  throwForce: 2
   groundLayer:
     serializedVersion: 2
     m_Bits: 256
   planet: {fileID: 1638111627}
-  projectile: {fileID: 8512364830569300270, guid: 839eab331366d5a4a80a95097a7aea4b,
-    type: 3}
 --- !u!50 &313005476
 Rigidbody2D:
   serializedVersion: 4
@@ -698,7 +758,7 @@ Transform:
   m_Children:
   - {fileID: 1751189047}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &366181701 stripped
 GameObject:
@@ -788,6 +848,12 @@ Transform:
   m_Father: {fileID: 1537202492}
   m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &399048131 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1112521901, guid: 2221fddfa218d9e4b8fd8d9d0a054505,
+    type: 3}
+  m_PrefabInstance: {fileID: 3542982862232440952}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &438132158
 GameObject:
   m_ObjectHideFlags: 0
@@ -869,7 +935,7 @@ Transform:
   m_Children:
   - {fileID: 1537202492}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &458435292
 GameObject:
@@ -987,7 +1053,7 @@ Transform:
   m_Children:
   - {fileID: 944902432}
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 40.06}
 --- !u!212 &507420453
 SpriteRenderer:
@@ -1203,7 +1269,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &519420033
 MonoBehaviour:
@@ -1391,7 +1457,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &861422181
 GameObject:
@@ -2058,7 +2124,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1256708175
 GameObject:
@@ -3028,7 +3094,7 @@ RectTransform:
   m_Children:
   - {fileID: 1486185513}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -3435,7 +3501,7 @@ PrefabInstance:
     - target: {fileID: 2822660251514867196, guid: 51c760a4ae3fbba408f5199f509c1ef8,
         type: 3}
       propertyPath: m_RootOrder
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 2822660251514867196, guid: 51c760a4ae3fbba408f5199f509c1ef8,
         type: 3}
@@ -3548,6 +3614,10 @@ PrefabInstance:
       value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1638111624, guid: 2221fddfa218d9e4b8fd8d9d0a054505, type: 3}
+      propertyPath: gameManager
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1638111624, guid: 2221fddfa218d9e4b8fd8d9d0a054505, type: 3}
       propertyPath: gameOverText
       value: 
       objectReference: {fileID: 1486185514}
@@ -3619,7 +3689,7 @@ PrefabInstance:
     - target: {fileID: 3542982861701958131, guid: 2221fddfa218d9e4b8fd8d9d0a054505,
         type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 3542982861701958131, guid: 2221fddfa218d9e4b8fd8d9d0a054505,
         type: 3}

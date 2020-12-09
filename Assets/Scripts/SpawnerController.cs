@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class SpawnerController : MonoBehaviour
 {
+    private GameManager gameManager;
+
     //Prefab of a typical ball
     [SerializeField] private GameObject ballPrefab; 
 
@@ -38,7 +40,9 @@ public class SpawnerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        colorBalls = GameObject.Find("Planet Bottom").GetComponent<CircleSegmentManager>().segmentColors;
+        gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
+
+        colorBalls = gameManager.segmentColors;
         innerRadius = GameObject.Find("Planet Top").GetComponent<InnerCircleCollider>().Radius * GameObject.Find("Planet Bottom").transform.localScale.x;
         outerRadius = GameObject.Find("Planet Top").GetComponent<InnerCircleCollider>().Radius * GameObject.Find("Planet Top").transform.localScale.x;
         //Debug.Log("Inner radius: " + innerRadius);

@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class CircleSegment : MonoBehaviour
 {
+    private GameManager gameManager;
+
     public PolygonCollider2D polygonCollider;
     private SpriteRenderer _spriteRenderer;
     private CircleSegmentAnimation _animator;
@@ -27,10 +29,12 @@ public class CircleSegment : MonoBehaviour
 
     public void Initialize(float innerRadius, float outerRadius, float startAngle, float endAngle, int slice, int layer)
     {
+        gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
+
         // Init variables (Do not put this in start because of order of execution with CircleSegmentManager's start function)
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _animator = GetComponent<CircleSegmentAnimation>();
-        _disabledColor = FindObjectOfType<CircleSegmentManager>().segmentColors[0];
+        _disabledColor = gameManager.segmentColors[0];
         
         // Init GFX and collider
         float angleOffset = Mathf.Asin(offset / innerRadius);
@@ -104,7 +108,7 @@ public class CircleSegment : MonoBehaviour
 
                 // Update variables for collision
                 // If the first layer encountered is coloured (not of the color describing an empty block), then the player loses
-                if (circleSegmentManager.segmentsOrdered[_slice, circleSegmentManager.nLayer - 1].GetColor() != circleSegmentManager.segmentColors[0]) {
+                if (circleSegmentManager.segmentsOrdered[_slice, gameManager.nLayer - 1].GetColor() != gameManager.segmentColors[0]) {
                     
                     collision_handled = true;
                     Destroy(other.gameObject);
@@ -117,11 +121,11 @@ public class CircleSegment : MonoBehaviour
                 } else if (!collision_handled) {
 
                     // Loop on all segments (layer) of the current slice to find the uncolored segment that is the closest one
-                    for (int i = circleSegmentManager.nLayer - 2; i >= 0 ; i--) {
-                        if (!collision_handled && circleSegmentManager.segmentsOrdered[_slice, i].GetColor() != circleSegmentManager.segmentColors[0]) {
+                    for (int i = gameManager.nLayer - 2; i >= 0 ; i--) {
+                        if (!collision_handled && circleSegmentManager.segmentsOrdered[_slice, i].GetColor() != gameManager.segmentColors[0]) {
                             
                             // Handle the collision immediately if it has too
-                            if (i == circleSegmentManager.nLayer - 2){
+                            if (i == gameManager.nLayer - 2){
                                 // Change colour of block by colour of ball
                                 circleSegmentManager.segmentsOrdered[_slice, i+1].ChangeColor(other.GetComponent<SpriteRenderer>().color);
                                                     
