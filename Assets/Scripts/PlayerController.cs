@@ -23,6 +23,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private LayerMask groundLayer;
     public Transform planet;
     private GameObject projectile;
+    public GameObject projectileRemover;
 
     // Start is called before the first frame update
     void Start()
