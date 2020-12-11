@@ -2,30 +2,40 @@
 
 public class PlayerController : MonoBehaviour
 {
+    private GameManager gameManager;
 
     private Rigidbody2D _rb;
     
     [Header("Renderer")]
     public ParticleSystem featherBurst;
 
-    [Header("Gravity")] public bool enableGravity = true;
-    public float gravity;
+    [Header("Gravity")] 
+    private bool enableGravity;
+    private float gravity;
     private Vector3 _gravityDirection;
 
     [Header("Controls")]
-    public float jumpForce;
-    public float speed;
-    public float throwForce;  // For throwing a projectile
+    private float jumpForce;
+    private float speed;
+    private float throwForce;  // For throwing a projectile
     
     [Header("Others")]
     [SerializeField] private LayerMask groundLayer;
     public Transform planet;
-    public GameObject projectile;
+    private GameObject projectile;
+    public GameObject projectileRemover;
 
     // Start is called before the first frame update
     void Start()
     {
         _rb = GetComponent<Rigidbody2D>();
+        gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
+        enableGravity = gameManager.enableGravity;
+        gravity = gameManager.gravity;
+        jumpForce = gameManager.jumpForce;
+        speed = gameManager.speed;
+        throwForce = gameManager.throwForce;
+        projectile = gameManager.projectile;
     }
 
     // Update is called once per frame

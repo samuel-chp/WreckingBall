@@ -7,50 +7,69 @@ using Random=UnityEngine.Random;
 using TMPro;
 
 public class CircleSegmentManager : MonoBehaviour
-{   
+{
+    private GameManager gameManager;
+
     // Attributes
     [SerializeField] private GameObject circleDelimiterPrefab;
     [SerializeField] private GameObject lineSegmentPrefab;
     [SerializeField] private GameObject circleSegmentPrefab;
     [SerializeField] private GameObject spawnerPrefab;
-    public GameObject planetCore;
+   
     
-    public int nLayer;
-    public int nSlice;
-
-    public Color[] segmentColors; //Convention: first color = "empty" color (Black by default)
-
     public Color[,] colorBlocks; // Array to keep track of the color by slice and layer
     public CircleSegment[,] segmentsOrdered; // Array to access segments by slice and layer
+    private List<float> lanesDist; // To store domain for each lane
 
     // Variables for filling mode
-    public int heightFilling; 
-    public int probabilityBlackLastLayer; 
-    public string fillingMode = "normal"; //easy": maximize the chance to have two blocks next to each other
+    private int heightFilling;
+    private int probabilityBlackLastLayer;
+    private string fillingMode = "normal"; //easy": maximize the chance to have two blocks next to each other
                                           //"normal": 2 blocks of the same color can be next to each other
                                           //"hard": 2 blocks of the same color can't be next to each other
 
-    // To move in a Game manager
-    public GameObject planetTop;
-    public int numberLane = 3; // Number of lanes to play with
-    private List<float> lanesDist; // To store domain for each lane
-    public TextMeshProUGUI gameOverText;
+    // In GameManager
+    private GameObject planetTop;
+    private GameObject planetCore;
+    private int numberLane = 3; // Number of lanes to play with
+    private TextMeshProUGUI gameOverText;
+    private int nLayer;
+    private int nSlice;
+
+    private Color[] segmentColors; //Convention: first color = "empty" color (Black by default)
+
 
     /* -------------------------------------------------------------------------------------------------------------------------------------------- 
     -------------------------------------------------- Creating the puzzle game -------------------------------------------------------------------
     -------------------------------------------------------------------------------------------------------------------------------------------- */
-    
+
     // Start is called before the first frame update
     void Start()
     {
+        Init();
+
+    }
+
+
+    public void Init()
+    {   
+        gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
         lanesDist = new List<float>();
+
+        nLayer = gameManager.nLayer;
+        nSlice = gameManager.nSlice;
+        segmentColors = gameManager.segmentColors;
+        heightFilling = gameManager.heightFilling;
+        probabilityBlackLastLayer = gameManager.probabilityBlackLastLayer;
+        fillingMode = gameManager.fillingMode;
+        planetTop = gameManager.planetTop;
+        planetCore = gameManager.planetCore;
+        numberLane = gameManager.numberLane;
+        gameOverText = gameManager.gameOverText;
 
         GenerateCircleSegments();
         GenerateLineSegmentAndSpawners();
         GenerateCircleDelimiter();
-
-        // To move elsewhere
-        gameOverText.gameObject.SetActive(false);
     }
 
     private void GenerateCircleDelimiter()
@@ -103,7 +122,7 @@ public class CircleSegmentManager : MonoBehaviour
         }
     }
 
-    private void GenerateCircleSegments()
+    public void GenerateCircleSegments()
     {
         float unitAngle = (float) (Math.PI / nSlice);
         float unitScale = (1 - planetCore.transform.localScale.x) / nLayer;
@@ -694,7 +713,7 @@ public class CircleSegmentManager : MonoBehaviour
             // Replace the color of all Matching blocks by black
             colorBlocks[position.x, position.y] = segmentColors[0];
             segmentsOrdered[position.x, position.y].ChangeColor(segmentColors[0]);
-            Debug.Log("removed !");
+            // Debug.Log("removed !");
 
             /* There is nothing to do if 
                 * the removed block is at the top of a column
@@ -725,23 +744,21 @@ public class CircleSegmentManager : MonoBehaviour
         // An empty block could be counted due to the way the position is downgraded
         // For instance in the case of two blocks to be removed with a moved block above them, the upper removed block position will be counted
         // This loop remove all miscounted blocks
+        HashSet<Vector2Int> movedBlocksFinal = new HashSet<Vector2Int>();
+        foreach (Vector2Int positionToCheck in movedBlocks) {
+            if (colorBlocks[positionToCheck.x, positionToCheck.y] != segmentColors[0]) {
+                movedBlocksFinal.Add(positionToCheck);
+            }
+        }
+        /*
         foreach (Vector2Int positionToCheck in movedBlocks) {
             if (colorBlocks[positionToCheck.x, positionToCheck.y] == segmentColors[0]) {
                 movedBlocks.Remove(positionToCheck);
             }
         }
+        */
 
-        return movedBlocks;
+        return movedBlocksFinal;
         
-    }
- 
-
-
-    // Game Over
-    // To move properly in a game manager 
-    public void PlayerLoses(){
-        FindObjectOfType<AudioManager>().StopSounds();
-        Time.timeScale = 0;
-        gameOverText.gameObject.SetActive(true);
     }
 }

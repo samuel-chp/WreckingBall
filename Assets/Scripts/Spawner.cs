@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Spawner : MonoBehaviour
 {
+    private GameManager gameManager;
 
     // Possible colors (= same as blocks)  
     public Color[] colors;
@@ -15,8 +16,9 @@ public class Spawner : MonoBehaviour
     [SerializeField] private GameObject spawnItem;
 
     void Start()
-    { 
-        colors = GameObject.Find("Planet Bottom").GetComponent<CircleSegmentManager>().segmentColors;
+    {
+        gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
+        colors = gameManager.segmentColors;
     }
 
     //Destroy all remaining feathers
