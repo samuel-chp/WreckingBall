@@ -61,7 +61,7 @@ public class CircleSegmentAnimation : MonoBehaviour
             _circleSegment.EnableCollider(false);
             _directionScale = 1f;
             // Play sound
-            FindObjectOfType<AudioManager>().Play("Wobble");
+            FindObjectOfType<AudioManager>().PlaySound("Wobble");
             // Start animation next frame
             _currentAnimation = "scaleUp&Down";
         }
@@ -97,7 +97,7 @@ public class CircleSegmentAnimation : MonoBehaviour
             }
 
             // Play animation
-            FindObjectOfType<AudioManager>().Play("Bounce");
+            FindObjectOfType<AudioManager>().PlaySound("Bounce");
             foreach (ParticleSystem ps in systems)
             {
                 ps.Play();
