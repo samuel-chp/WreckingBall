@@ -740,6 +740,7 @@ public class CircleSegmentManager : MonoBehaviour
     // Game Over
     // To move properly in a game manager 
     public void PlayerLoses(){
+        FindObjectOfType<AudioManager>().StopSounds();
         Time.timeScale = 0;
         gameOverText.gameObject.SetActive(true);
     }

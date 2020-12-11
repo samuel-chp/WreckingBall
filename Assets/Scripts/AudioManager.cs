@@ -1,10 +1,12 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using System;
 using extOSC;
 
 public class AudioManager : MonoBehaviour
 {
     public Sound[] sounds;
+    public Sound[] musics;
     
     // OSC Connexion
     private OSCTransmitter _transmitter;
@@ -32,25 +34,32 @@ public class AudioManager : MonoBehaviour
         
         // OSC initialization
         _transmitter = GetComponent<OSCTransmitter>();
+
+        StartCoroutine(nameof(LateStart));
+    }
+    
+    IEnumerator LateStart() 
+    {
+        yield return new WaitForSeconds(0.5f);
+        PlayMusic("Chunky_Monkey");
     }
 
     private void Update()
     {
         // SOUNDS
-        if (Input.GetKeyDown(KeyCode.A))
+        if (Input.GetKeyDown(KeyCode.M))
         {
-            Debug.Log("Start sound");
-            Play("Music");
+            Debug.Log("Start music.");
+            PlayMusic("Potato");
         }
-        if (Input.GetKeyDown(KeyCode.Z))
+        if (Input.GetKeyDown(KeyCode.S))
         {
-            Debug.Log("Start sound");
-            Play("Big_Pillow_Shacking");
+            Debug.Log("Stop sounds & music.");
+            StopSounds();
         }
-        
     }
 
-    public void Play(string soundName)
+    public void PlaySound(string soundName)
     {
         // Find sound
         Sound s = Array.Find(sounds, sound => sound.soundName == soundName);
@@ -80,5 +89,43 @@ public class AudioManager : MonoBehaviour
         message.AddValue(OSCValue.Float(s.pitch));  // pitch
         // Send message
         _transmitter.Send(message);
+    }
+    
+    public void PlayMusic(string musicName)
+    {
+        // Find sound
+        Sound s = Array.Find(musics, sound => sound.soundName == musicName);
+        if (s == null)
+        {
+            Debug.LogWarning("Music '"+musicName+"' not found!");
+            return;
+        }
+
+        // Play music
+        // Create message
+        var message = new OSCMessage("/playMusic");
+        // Populate values.
+        message.AddValue(OSCValue.String("useless"));  
+        message.AddValue(OSCValue.String(s.absolutePath)); // filename
+        message.AddValue(OSCValue.Float(s.volume)); // volume 
+        message.AddValue(OSCValue.Float(s.pitch));  // pitch
+        // Send message
+        _transmitter.Send(message);
+    }
+
+    public void StopSounds()
+    {
+        // Play sound
+        // Create message
+        var message = new OSCMessage("/stop");
+        // Populate values.
+        message.AddValue(OSCValue.String("useless"));
+        // Send message
+        _transmitter.Send(message);
+    }
+
+    private void OnApplicationQuit()
+    {
+        StopSounds();
     }
 }
