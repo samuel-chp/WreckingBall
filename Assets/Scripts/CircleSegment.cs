@@ -76,95 +76,91 @@ public class CircleSegment : MonoBehaviour
         
         if (other.CompareTag("Projectile"))
         {   
-            // Access to circleSegmentManager attributes
-            CircleSegmentManager circleSegmentManager = GameObject.Find("Planet Bottom").GetComponent<CircleSegmentManager>(); 
 
-            // ----- Case when a collision has to be handled ----- //
-            Vector2Int coordinatesToRetrieve = other.GetComponent<TransformedProjectileController>().GetNextCollisionCoords();
-            if (coordinatesToRetrieve.x >= 0){
+            if (!other.GetComponent<TransformedProjectileController>().WillItHitBossSoon()){
 
-                // Handle collision only if it is the right segment
-                GameObject segmentToRetrieve = other.GetComponent<TransformedProjectileController>().GetNextCollision();
-                if (segmentToRetrieve == this.gameObject){
-                    
-                    // Change colour of block by colour of ball
-                    circleSegmentManager.segmentsOrdered[coordinatesToRetrieve.x, coordinatesToRetrieve.y].ChangeColor(other.GetComponent<SpriteRenderer>().color);
+                // Access to circleSegmentManager attributes
+                CircleSegmentManager circleSegmentManager = GameObject.Find("Planet Bottom").GetComponent<CircleSegmentManager>(); 
 
-                    // Update color Array
-                    circleSegmentManager.colorBlocks[coordinatesToRetrieve.x, coordinatesToRetrieve.y] = other.GetComponent<SpriteRenderer>().color;
+                // ----- Case when a collision has to be handled ----- //
+                Vector2Int coordinatesToRetrieve = other.GetComponent<TransformedProjectileController>().GetNextCollisionCoords();
+                if (coordinatesToRetrieve.x >= 0){
 
-                    // ----- TODO: The ball must disappear at the good spot -----
-                    Destroy(other.gameObject);
+                    // Handle collision only if it is the right segment
+                    GameObject segmentToRetrieve = other.GetComponent<TransformedProjectileController>().GetNextCollision();
+                    if (segmentToRetrieve == this.gameObject){
+                        
+                        // Change colour of block by colour of ball
+                        circleSegmentManager.segmentsOrdered[coordinatesToRetrieve.x, coordinatesToRetrieve.y].ChangeColor(other.GetComponent<SpriteRenderer>().color);
 
-                    // Manage matching of blocks
-                    circleSegmentManager.ManageMatching(coordinatesToRetrieve.x, coordinatesToRetrieve.y);
+                        // Update color Array
+                        circleSegmentManager.colorBlocks[coordinatesToRetrieve.x, coordinatesToRetrieve.y] = other.GetComponent<SpriteRenderer>().color;
+
+                        // Ball disppear at the good spot
+                        Destroy(other.gameObject);
+
+                        // Manage matching of blocks
+                        circleSegmentManager.ManageMatching(coordinatesToRetrieve.x, coordinatesToRetrieve.y);
+                    }
                 }
-            }
-            
-            // ----- Case when collision is not yet handled ----- //
-            else {
                 
-                bool collision_handled = false; 
-
-                // Update variables for collision
-                // If the first layer encountered is coloured (not of the color describing an empty block), then the player loses
-                if (circleSegmentManager.segmentsOrdered[_slice, gameManager.nLayer - 1].GetColor() != gameManager.segmentColors[0]) {
+                // ----- Case when collision is not yet handled ----- //
+                else {
                     
-                    collision_handled = true;
-                    Destroy(other.gameObject);
+                    bool collision_handled = false; 
 
-                    // Player looses
-                    circleSegmentManager.PlayerLoses();
-                    
+                    // Update variables for collision
+                    // If the first layer encountered is coloured (not of the color describing an empty block), then the player loses
+                    if (circleSegmentManager.segmentsOrdered[_slice, gameManager.nLayer - 1].GetColor() != gameManager.segmentColors[0]) {
+                        
+                        collision_handled = true;
+                        Destroy(other.gameObject);
 
-                // Normal case
-                } else if (!collision_handled) {
+                        // Player looses
+                        gameManager.PlayerLoses();
+                        
 
-                    // Loop on all segments (layer) of the current slice to find the uncolored segment that is the closest one
-                    for (int i = gameManager.nLayer - 2; i >= 0 ; i--) {
-                        if (!collision_handled && circleSegmentManager.segmentsOrdered[_slice, i].GetColor() != gameManager.segmentColors[0]) {
-                            
-                            // Handle the collision immediately if it has too
-                            if (i == gameManager.nLayer - 2){
-                                // Change colour of block by colour of ball
-                                circleSegmentManager.segmentsOrdered[_slice, i+1].ChangeColor(other.GetComponent<SpriteRenderer>().color);
-                                                    
-                                // Update color Array
-                                circleSegmentManager.colorBlocks[_slice, i+1] = other.GetComponent<SpriteRenderer>().color;
+                    // Normal case
+                    } else if (!collision_handled) {
 
-                                // ----- TODO: The ball must disappear at the good spot -----
-                                Destroy(other.gameObject);
+                        // Loop on all segments (layer) of the current slice to find the uncolored segment that is the closest one
+                        for (int i = gameManager.nLayer - 2; i >= 1; i--) {
+                            if (!collision_handled && circleSegmentManager.segmentsOrdered[_slice, i].GetColor() != gameManager.segmentColors[0]) {
+                                
+                                // Handle the collision immediately if it has too
+                                if (i == gameManager.nLayer - 2){
+                                    // Change colour of block by colour of ball
+                                    circleSegmentManager.segmentsOrdered[_slice, i+1].ChangeColor(other.GetComponent<SpriteRenderer>().color);
+                                                        
+                                    // Update color Array
+                                    circleSegmentManager.colorBlocks[_slice, i+1] = other.GetComponent<SpriteRenderer>().color;
+                                    
+                                    Destroy(other.gameObject);
 
-                                // Manage matching of blocks
-                                circleSegmentManager.ManageMatching(_slice, i+1);
-                            } else {
-                                // Indicate the corresponding layer to game object to handle collision at the right spot
-                                other.GetComponent<TransformedProjectileController>().SetNextCollision(new Vector2Int(_slice, i+1), circleSegmentManager.segmentsOrdered[_slice, i+1].gameObject);
+                                    // Manage matching of blocks
+                                    circleSegmentManager.ManageMatching(_slice, i+1);
+                                } else {
+                                    // Indicate the corresponding layer to game object to handle collision at the right spot
+                                    other.GetComponent<TransformedProjectileController>().SetNextCollision(new Vector2Int(_slice, i+1), circleSegmentManager.segmentsOrdered[_slice, i+1].gameObject);
+                                }
+                                
+                                collision_handled = true;
                             }
-                            
+                        }
+                        
+                        // If the collision is not yet managed, it means the projectile encountered only empty blocks and will hit the boss
+                        if (!collision_handled) {
+                                
+                            // Indicate to not search for colission in puzzle anymore for current egg as it will hit the boss
+                            other.GetComponent<TransformedProjectileController>().WillHitBossSoon();
                             collision_handled = true;
+
+                            // Boss lose a life point and update to phase of Boss fight, destruction of projectile are managed in PlanetCoreGFX
+                            //gameManager.OnHitBoss();                          
                         }
                     }
-
-                // If the player can reach the core of the planet
-                } else if (!collision_handled) {
-
-                    // ----- TODO: Boss lose a life point ----- //
-                    // ----- TODO: Update to phase 2 or 3 of Boss fight ----- //
-
-                    collision_handled = true;
-
-                }
-
+                }           
             }
-            
-
-
-            /*
-            GetComponent<SpriteRenderer>().color = other.GetComponent<SpriteRenderer>().color;
-            Destroy(other.gameObject);
-            */
-
         }
     }
 

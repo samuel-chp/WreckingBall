@@ -10,9 +10,12 @@ public class PlanetCoreGFX : MonoBehaviour
     private SpriteRenderer _spriteRenderer;
     private Vector3 _gravityDirection;
 
+    private GameManager gameManager;
+
     private void Start()
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();
+        gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
     }
 
     private void Update()
@@ -30,6 +33,17 @@ public class PlanetCoreGFX : MonoBehaviour
         {
             transform.rotation = Quaternion.Euler(0f, 0f, 90-angle);
             _spriteRenderer.flipX = false;
+        }
+    }
+
+    // Destroy a projectile hitting the core
+    private void OnTriggerEnter2D(Collider2D other){
+        if (other.CompareTag("Projectile"))
+        {  
+            Destroy(other.gameObject);
+            // Todo: animate/sound when receiving projectile ?
+            gameManager.OnHitBoss();
+            
         }
     }
 }

@@ -46,9 +46,16 @@ public class CircleSegmentManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Init();
+
+    }
+
+
+    public void Init()
+    {   
         gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
         lanesDist = new List<float>();
-        
+
         nLayer = gameManager.nLayer;
         nSlice = gameManager.nSlice;
         segmentColors = gameManager.segmentColors;
@@ -63,9 +70,6 @@ public class CircleSegmentManager : MonoBehaviour
         GenerateCircleSegments();
         GenerateLineSegmentAndSpawners();
         GenerateCircleDelimiter();
-
-        // To move elsewhere
-        gameOverText.gameObject.SetActive(false);
     }
 
     private void GenerateCircleDelimiter()
@@ -118,7 +122,7 @@ public class CircleSegmentManager : MonoBehaviour
         }
     }
 
-    private void GenerateCircleSegments()
+    public void GenerateCircleSegments()
     {
         float unitAngle = (float) (Math.PI / nSlice);
         float unitScale = (1 - planetCore.transform.localScale.x) / nLayer;
@@ -709,7 +713,7 @@ public class CircleSegmentManager : MonoBehaviour
             // Replace the color of all Matching blocks by black
             colorBlocks[position.x, position.y] = segmentColors[0];
             segmentsOrdered[position.x, position.y].ChangeColor(segmentColors[0]);
-            Debug.Log("removed !");
+            // Debug.Log("removed !");
 
             /* There is nothing to do if 
                 * the removed block is at the top of a column
@@ -740,22 +744,21 @@ public class CircleSegmentManager : MonoBehaviour
         // An empty block could be counted due to the way the position is downgraded
         // For instance in the case of two blocks to be removed with a moved block above them, the upper removed block position will be counted
         // This loop remove all miscounted blocks
+        HashSet<Vector2Int> movedBlocksFinal = new HashSet<Vector2Int>();
+        foreach (Vector2Int positionToCheck in movedBlocks) {
+            if (colorBlocks[positionToCheck.x, positionToCheck.y] != segmentColors[0]) {
+                movedBlocksFinal.Add(positionToCheck);
+            }
+        }
+        /*
         foreach (Vector2Int positionToCheck in movedBlocks) {
             if (colorBlocks[positionToCheck.x, positionToCheck.y] == segmentColors[0]) {
                 movedBlocks.Remove(positionToCheck);
             }
         }
+        */
 
-        return movedBlocks;
+        return movedBlocksFinal;
         
-    }
- 
-
-
-    // Game Over
-    // To move properly in a game manager 
-    public void PlayerLoses(){
-        Time.timeScale = 0;
-        gameOverText.gameObject.SetActive(true);
     }
 }

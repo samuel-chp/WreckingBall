@@ -30,6 +30,7 @@ public class GameManager : MonoBehaviour
     public GameObject planetCore;
     public GameObject projectile;
     public TextMeshProUGUI gameOverText;
+    public TextMeshProUGUI gameWonText;
 
     //Variables from PlayerController.cs
     [Header("Player")]
@@ -39,6 +40,9 @@ public class GameManager : MonoBehaviour
     public float speed = 2;
     public float throwForce = 2;  // For throwing a projectile
 
+    // Special variable for GameManager
+    [Header("Boss")]
+    public int lifePoints = 3;
     
 
     // Start is called before the first frame update
@@ -90,6 +94,49 @@ public class GameManager : MonoBehaviour
             }
             levels.Add(obj); // add whole obj dictionary in the levels[].
         }
+    }
+
+
+    // Update boss fight phase when Boss is hitted
+    public void OnHitBoss(){
+        lifePoints = lifePoints - 1;
+        CircleSegmentManager _circleSegmentManager = GameObject.Find("Planet Bottom").GetComponent<CircleSegmentManager>();
+
+        if (lifePoints == 2){
+            // Update some variables 
+
+            // Update sprites
+            
+
+            // Reinitialize level
+            //_circleSegmentManager.Init();
+        }
+        else if (lifePoints == 1){
+            // Update some variables 
+
+            // Update sprites 
+
+            // Reinitialize level
+            //_circleSegmentManager.Init();
+
+        } else if (lifePoints == 0){
+            PlayerWins();
+        }
+    }
+
+
+    // Win
+    public void PlayerWins(){
+        Time.timeScale = 0; // Stop game
+        gameWonText.gameObject.SetActive(true); // Pop a end menu instead of this
+        
+    }
+
+    // Game Over
+    public void PlayerLoses(){
+        Time.timeScale = 0; // Stop game
+        gameOverText.gameObject.SetActive(true); // Pop a end menu instead of this
+        
     }
 
 }
