@@ -1,8 +1,10 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Xml;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -29,6 +31,7 @@ public class GameManager : MonoBehaviour
     public GameObject planetTop;
     public GameObject planetCore;
     public GameObject projectile;
+    public GameObject maskUI;
     public TextMeshProUGUI gameOverText;
     public TextMeshProUGUI gameWonText;
 
@@ -44,10 +47,15 @@ public class GameManager : MonoBehaviour
     [Header("Boss")]
     public int lifePoints = 3;
     
+    // EndGame
+    private bool _gameOver; // true if win or lose
+    
 
     // Start is called before the first frame update
     void Start()
     {
+        Time.timeScale = 1f;
+        
         GetLevel();
 
         //Level initialization
@@ -61,6 +69,19 @@ public class GameManager : MonoBehaviour
             Debug.Log(key);
         }
         */
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space) && _gameOver)
+        {
+            SceneManager.LoadScene(1);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Backspace) && _gameOver)
+        {
+            SceneManager.LoadScene(0);
+        }
     }
 
     //Script to load the levels from the XML file
@@ -128,15 +149,17 @@ public class GameManager : MonoBehaviour
     // Win
     public void PlayerWins(){
         Time.timeScale = 0; // Stop game
+        maskUI.SetActive(true);
         gameWonText.gameObject.SetActive(true); // Pop a end menu instead of this
-        
+        _gameOver = true;
     }
 
     // Game Over
     public void PlayerLoses(){
         Time.timeScale = 0; // Stop game
+        maskUI.SetActive(true);
         gameOverText.gameObject.SetActive(true); // Pop a end menu instead of this
-        
+        _gameOver = true;
     }
 
 }

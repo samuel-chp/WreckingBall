@@ -100,8 +100,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 108c9681f843c884fba210add3df7608, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  polygonCollider: {fileID: 0}
   numPoints: 20
   offset: 0.01
+  oldColor: {r: 0, g: 0, b: 0, a: 1}
 --- !u!60 &-1792377207937420430
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -267,8 +269,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 218904094ae27504c8e98e79e8c1f726, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cameraController: {fileID: 0}
   maxScale: 1.03
   durationScale: 0.2
+  particleSize: 0.2
 --- !u!1001 &5825958897915539752
 PrefabInstance:
   m_ObjectHideFlags: 0
