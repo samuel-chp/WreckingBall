@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class CircleSegmentAnimation : MonoBehaviour
 {
+    public CameraController cameraController;
+    
     private string _currentAnimation;
     private CircleSegment _circleSegment;
 
@@ -54,6 +56,11 @@ public class CircleSegmentAnimation : MonoBehaviour
 
     public void PlayAnimation(string animationName)
     {
+        if (cameraController == null)
+        {
+            cameraController = FindObjectOfType<CameraController>();
+        }
+        
         if (animationName == "scaleUp&Down")
         {
             _initialScale = transform.localScale;
@@ -102,6 +109,7 @@ public class CircleSegmentAnimation : MonoBehaviour
             {
                 ps.Play();
             }
+            cameraController.LittleShake();
         }
     }
 }
